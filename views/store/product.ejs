@@ -1,0 +1,527 @@
+<%- include('../partials/store-head.ejs') %>
+<%
+  // for the breadcrumb
+  const pages = [{ label: product.title }]
+  if (locals.fromCategory) {
+    pages.unshift({ label: fromCategory.title, link: `/categorias/${fromCategory.handle}` })
+  }
+%>
+<%- include('../partials/breadcrumb.ejs', { pages }) %>
+
+
+<style>
+
+  h1.productTitle {
+    margin-top: 16px;
+    margin-bottom: 0;
+  }
+
+  .price {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+  }
+
+  .images-container {
+    display: flex;
+  }
+
+  .expaneded-container {
+    flex-grow: 1;
+  }
+
+  .share {
+    margin-top: 20px;
+    border: none;
+    border-radius: 50px;
+    width: 50px;
+    height: 50px;
+    color: #5f9061;
+    background-color: whitesmoke;
+    transition: all 0.5s;
+  }
+
+  .share:hover {
+    background-color: lightgrey;
+  }
+
+  ul.shareList  {
+    list-style-type: none;
+    padding: 0;
+    padding: 10px 30px 0 30px;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  ul.shareList li {
+    display: inline-block;
+    margin-right: 14px;
+  }
+
+  ul.shareList li img {
+    width: 36px;
+  }
+
+  .shareLink {
+    transition: all 0.5s;
+    position: relative;
+    bottom: 0;
+    opacity: 1;
+  }
+
+  .shareLink:hover {
+    bottom: 6px;
+    opacity: 0.7;
+  }
+
+  .recommendations {
+    margin-top: 80px;
+  }
+
+  .recommendations h2 {
+    margin-bottom: 1.3em;
+  }
+
+
+  .picture {
+    height: 400px;
+  }
+
+  .pictureLink {
+    margin-right: 20px;
+  }
+  
+  .pictureLink:last-child {
+    margin-right: 0;
+  }
+
+  @media screen and (max-width: 992px) {
+    .recommendations {
+      margin-top: 40px;
+    }
+  }
+
+  .currentImage {
+    width: 100%;
+    padding-bottom: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 4px;
+
+  }
+
+  .thumbnailImageContainer {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .thumbnailImage {
+    border-radius: 4px;
+    width: 66px;
+    height: 66px;
+    margin-right: 8px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .thumbnailImage:last-child {
+    margin-right: 0;
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    grid-gap: 16px;
+    margin: 16px 0 30px 0;
+    align-items: start;
+  }
+
+  .table-header {
+    font-weight: bold;
+    margin-right: 16px;
+    width: 26px;
+  }
+
+  .reviews {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+  }
+
+  .reviews__value {
+    margin: 0em 0 0.5em 0;
+  }
+
+  .review-details {
+    margin-top: 3px;
+    margin-left: 8px;
+    color: gray;
+  }
+
+  .tab-header {
+    display: flex;
+    margin-top: 20px;
+    overflow-y: auto;
+  }
+
+  .tab-button {
+    padding: 12px;
+    /* color: #5f9061; */
+    font-weight: bold;
+    flex-shrink: 0;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .tab-button.active {
+    border-bottom: 3px solid #5f9061;
+    color: #5f9061;
+  }
+
+  .tab-content {
+    display: none;
+    margin-top: 24px;
+  }
+
+  #comment-review, .login-to-review {
+    margin-top: 30px;
+    border: none;
+    padding: 16px;
+    border-radius: 4px;
+    background-color: whitesmoke;
+  }
+
+  #comment-review {
+    display: block;
+    width: 100%;
+    height: 120px;
+  }
+
+  .value-review {
+    display: flex;
+  }
+
+  .value-review {
+    display: flex;
+    align-items: center;
+  }
+
+  .value-review .star {
+    cursor: pointer;
+    width: 32px;
+  }
+
+  .value-review #value-descriptor {
+    margin-left: 16px;
+    margin-top: 3px;
+  }
+
+  .review {
+    margin-bottom: 20px;
+  }
+
+  .message-edit-review {
+    padding: 20px 30px;
+    background-color: whitesmoke;
+    border-radius: 4px;
+  }
+
+  .review-top-message {
+    font-weight: bold; 
+    margin-top: 40px;
+  }
+</style>
+<% 
+  let price, compareAt, stock
+  if (product.hasVariants) {
+    if (variantIndex > product.variants.length) variantIndex = 1
+    price = product.variants[variantIndex - 1].price
+    compareAt = product.variants[variantIndex - 1].compareAt
+    stock = product.variants[variantIndex - 1].stock
+  } else {
+    price = product.price
+    compareAt = product.compareAt
+    stock = product.stock
+  } 
+%>
+<% let userReview;%>
+<div class="row">
+  <div class="col-lg-6 imageColumn">
+    <div class="currentImage" style="background-image: url('<%= product.images?.length > 0 ? product.images[0].coverSrc : '/statics/assets/no-image.png' %>');"></div>
+    <% if (product.images?.length > 1) { %>
+      <div class="thumbnailImageContainer">
+        <% product.images.forEach((image, index) => { %>
+          <div class="thumbnailImage" data-image="<%= image.coverSrc %>" style="background-image: url('<%= image.coverSrc %>');"></div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+  <div class="col-lg-6 detailsColumn">
+    <div class="stickyElement">
+      <h1 class="productTitle"><%= product.title %></h1>
+      <div class="reviews">
+        <% const reviewValue = product.averageReview() %>
+        <%- include('../partials/stars.ejs', { value: reviewValue }) %>
+
+        <span class="review-details">
+          <% const reviewQty = product.reviewQty()
+          if (reviewQty > 0) { %>
+            <b><%= reviewValue.toFixed(1) %></b> de <%= reviewQty %> reseña<%= reviewQty > 1? 's' : '' %>
+          <% } else { %>
+            Aún sin reseñas
+          <% } %>
+        </span>
+      </div>
+      <h1 class="price mb-0">
+        $ <%= price %>
+        <% if (compareAt) { %>
+        <span class="compare-at">&nbsp;$<%= compareAt %>&nbsp;</span>
+        <% } %>
+      </h1>
+      <div class="details-grid">
+        <img style="width: 100%;" src="/statics/assets/handing-icon.svg">
+        <div>
+          Te lo enviamos gratis en todo Uruguay.
+        </div>
+        <img style="width: 100%;" src="/statics/assets/stock-icon.svg">
+        <div>
+          <%= stock == 0? 'Sin stock' : (stock? stock == 1? 'Última unidad' : `Solo quedan ${stock} unidades` : 'Disponible') %>.
+        </div>
+      </div>
+      <% if (product.hasVariants) { %>
+        <%- include('../partials/validatable-input.ejs', { label: 'Opciones', name: 'options', value: variantIndex, options: product.variants.map((variant, index) => { return { text: variant.values.join(', '), value: index + 1 } }), class: 'first-col' }) %>
+      <% } %>
+      <%- include('../partials/addToCart.ejs', { stock, variantIndex: variantIndex || undefined }) %>
+      <div class="tab-header">
+        <% if (product.description) { %><a href="#descripcion" class="tab-button active">Descripción</a><% } %>
+        <a href="#resenas" class="tab-button">Reseñas</a>
+      </div>
+      <% if (product.description) { %><div id="descripcion" class="tab-content" style="display: block;"><%- product.description %></div><% } %>
+      <div id="resenas" class="tab-content" <% if (!product.description) { %>style="display: block;"<% } %>>
+        <% if (reviewQty > 0) {
+          product.reviews.reverse().forEach(review => { 
+              if (locals.user && locals.user.id === String(review.user)) {
+                userReview = review
+              } %>
+            <div class="review">
+              <b><%= review.name %></b>
+              <% const millisInDay = 86400000
+              const rawDaysFromNow = (Date.now() - review.created.getTime()) / millisInDay
+              const daysFromNow = Math.floor(rawDaysFromNow)
+              if (daysFromNow < 1) { %>
+                hace un momento
+              <% } else { 
+                if (daysFromNow === 1) { %>
+                  ayer
+                <% } else { %>
+                  hace <%= daysFromNow %> dias
+                <% }
+              } %>
+              <div class="reviews__value">
+                <% for (let i = 1; i <= review.value; i++) { %>
+                  <img class="star" src="/statics/assets/star-fill.svg">
+                <% }
+                for (let i = review.value + 1; i <= 5; i++) { %>
+                  <img class="star" src="/statics/assets/star-empty.svg">
+                <% } %>
+              </div>
+              <%= review.comment %>
+            </div>
+          <% })
+        } %>
+          
+        <% if (reviewQty > 0 && !userReview) { %>
+          <p class="review-top-message">Valora el producto y escribe tu reseña.</p>
+        <% } %>
+        <% if (reviewQty == 0) { %>
+          <p class="review-top-message" style="margin-top: 0px;">Este producto aún no tiene reseñas. ¡Se el primero en valorarlo!</p>
+        <% } %>
+        <% if (!locals.user) { %>
+          <div class="login-to-review">Para dejar una reseña debes <a href="/cuenta/ingresar?redirect=/productos/<%= product.handle %>@resenas-tab">iniciar sesión</a></div>
+        <% } %>
+        <% if (userReview) { %>
+          <div class="login-to-review">Ya escribiste una reseña. <a href="#" onclick="event.preventDefault(); $('.write-review').show(); $('.login-to-review').hide()">Edita la anterior</a></div>
+        <% } %>     
+        <% if (locals.user) { %>
+          <div class="write-review" <% if (userReview) { %> style="display: none" <% } %>>
+            <div class="value-review">
+              <img class="star" data-value="1" src="/statics/assets/star-empty.svg">
+              <img class="star" data-value="2" src="/statics/assets/star-empty.svg">
+              <img class="star" data-value="3" src="/statics/assets/star-empty.svg">
+              <img class="star" data-value="4" src="/statics/assets/star-empty.svg">
+              <img class="star" data-value="5" src="/statics/assets/star-empty.svg">
+              <span id="value-descriptor"></span>
+            </div>
+            <textarea id="comment-review" placeholder="Comentario opcional"><%= userReview?.comment?.trim() %></textarea>
+            <button class="secondary" style="margin-top: 8px;" onclick="submitReview()">Enviar</button>
+          </div> 
+        <% } %>
+      </div>
+
+      <div class="positionRelative">
+        <button class="toggleMenu share">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share-fill" viewBox="0 0 16 16">
+            <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
+          </svg>
+        </button>
+        <div class="collapsableMenu">
+          <ul class="shareList">
+            <li>
+              <a 
+                href="https://api.whatsapp.com/send?text=Mirá lo que encontré en el Vivero! <%= url %>"
+                data-action="share/whatsapp/share"
+                title="Share on WhatsApp"
+                target="_blank"
+                class="shareLink"
+              >
+                <img src="/statics/assets/whatsapp.svg" alt="WhatsApp share icon">
+              </a>
+            </li>
+            <li>
+              <a 
+                href="https://www.facebook.com/sharer/sharer.php?u=<%= url %>&quote=Mirá lo que encontré en el Vivero!"
+                title="Share on Facebook"
+                target="_blank"
+                class="shareLink"
+              >
+                <img src="/statics/assets/facebook.svg" alt="Facebook share icon">
+              </a>
+            </li>
+            <li>
+              <a
+                href="mailto:?subject=Del Vivero!&amp;body=Mirá lo que encontré en el Vivero! <%= url %>"
+                title="Share by Email"
+                class="shareLink"
+              >
+                <img src="/statics/assets/email.svg" alt="Email share icon">
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="menuOverlay"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // open the corresponding tab
+  var hash = location.href.indexOf('#') >= 0 ? location.href.substring(location.href.indexOf('#')) : null;
+  if (hash) {
+    hash = hash.substring(0, hash.length - 4)
+    const content = $(hash)
+    if (content.length > 0) {
+      $('.tab-button').removeClass('active')
+      $(`a.tab-button[href='${hash}']`).addClass('active')
+      $('.tab-content').hide()
+      content.show()
+    } 
+  }
+  
+  const productHandle = '<%= product.handle %>';
+
+  $('#options').change(function (event) {
+    variantNumber = event.target.value
+    window.location.replace(location.pathname + `?variante=${variantNumber}`);
+  })
+
+  $('.tab-button').click(function(event) {
+    const fullLink = $(event.target).prop('href') 
+    const anchorStartingIndex = fullLink.indexOf('#');
+    const anchor = fullLink.substring(anchorStartingIndex)
+
+    $('.tab-button').removeClass('active')
+    $(event.target).addClass('active')
+
+    $('.tab-content').hide()
+    $(anchor).show()
+    event.preventDefault()
+  })
+
+  const currentImage = $('.currentImage')
+  $('.thumbnailImage').hover(event => {
+    const imageUrl = $(event.target).data('image')
+    currentImage.css("background-image", `url('${imageUrl}')`)
+
+  })
+
+  var reviewValue = <%= userReview?.value || 'null' %>;
+''
+  if (reviewValue) {
+    reviewState(reviewValue)
+  }
+
+  function reviewState(value) {
+
+    const message = {
+      1: 'Decepcionante',
+      2: 'Malo',
+      3: 'Pasable',
+      4: 'Muy bueno',
+      5: 'Excelente'
+    }
+    const starts = $('.value-review').children() 
+    
+    if (value) {
+      $('#value-descriptor').text(`${value}/5 - ${message[value]}`)
+      for (var i = 0; i < value; i++) {
+        $(starts[i]).prop('src', '/statics/assets/star-fill.svg')
+      }
+    } else {
+      $('#value-descriptor').empty()
+    }
+    for (var i = value || 0; i < 5; i++) {
+      $(starts[i]).prop('src', '/statics/assets/star-empty.svg')
+    }
+  }
+
+  $('.value-review .star').mouseenter(function (event) {
+    const hoverValue = parseInt($(event.target).data('value'))
+    reviewState(hoverValue)
+  })
+
+  $('.value-review').mouseleave(function (event) {
+    reviewState(reviewValue)
+  })
+
+  $('.value-review .star').click(function (event) {
+    reviewValue = parseInt($(event.target).data('value'))
+    reviewState(reviewValue)
+  })
+
+  function submitReview () {
+    if (!reviewValue) return alert('Debes seleccionar una valoración del 1 al 5 antes.')
+    const comment = $('textarea#comment-review').val() || undefined
+
+    fetchApi(`/api/products/${productHandle}/review`, {
+      params: { 
+        value: reviewValue,
+        comment,
+        _csrf: '<%= csrfToken %>'
+      },
+      success: function (data) {
+        alert('Tu reseña fue agregada con éxito. ¡Gracias!')
+        location.hash = '#resenas-tab';
+        window.location.reload()
+      },
+      error: function (errorData) {
+        alert(errorData.message || errorData)
+      },
+      internalError: function (errorData) {
+        alert(errorData.message || errorData)
+      }
+    })
+    // TODO: enviarlo al back
+  }
+</script>
+
+<div class="recommendations">
+  <h2>También te pueden interesar</h2>
+  <%- include('./snippets/list-products.ejs', { products: recommendedProducts, empty: "No products to recommend." }) %>
+</div>
+
+<%- include('../partials/store-tail.ejs') %>
+
+

@@ -1,0 +1,35 @@
+<%- include('./partials/admin-head.ejs') %>
+<%- include('./partials/breadcrumb.ejs', { pages: [{ label: 'Páginas' } ] }) %>
+
+<div id="vue-pages" v-cloak>
+  <h1>Páginas</h1>
+  <vue-table :cols="cols" resource-name="pages"></vue-table>
+  <a href="pages/create"><button class="primary">Nueva página</button></a>
+</div>
+
+<script type="module">
+  import vueTable from '/statics/scripts/tiendu-dynamic-table.vue.js'
+  axios.defaults.baseURL = `${window.location.protocol}//${window.location.host}/api/`
+  
+  new Vue({
+    el: '#vue-pages',
+    data() {
+      return {
+        cols: [
+          { 
+            label: 'Título',
+            val: 'title',
+            html: true,
+            format: (title, page) => (page.published? '<i class="bi bi-circle-fill published"></i>' : '<i class="bi bi-circle-fill not published"></i>') + title?.replace( /(<([^>]+)>)/ig, '')
+          },
+          { label: 'Contenido', format: content => content?.replace( /(<([^>]+)>)/ig, ''), val: 'content' },
+        ]
+      }
+    },
+    components: {
+      'vue-table': vueTable
+    }
+  })
+
+</script>
+<%- include('./partials/admin-tail.ejs') %>

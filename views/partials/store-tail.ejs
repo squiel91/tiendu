@@ -1,0 +1,236 @@
+    </div>
+    <footer>
+      <style>
+
+        .newsletter button {
+          border: none;
+          background-color: transparent;
+          color: #5f9061;
+          font-weight: bold;
+        }
+  
+        footer {
+          margin-top:60px;
+          padding: 40px 0 30px 0;
+          border-top: 1px solid lightgray;
+        }
+        
+        footer ul {
+          list-style-type: none;
+          padding: 0;
+          padding-right: 0;
+        }
+  
+        footer li {
+          padding: 8px 0 8px 0;
+        }
+        
+        .footer-message {
+          font-size: x-small;
+          color: gray;
+          flex-grow: 1;
+          margin-top: 40px;
+          align-items: center;
+        }
+
+        .get-in-touch {
+          margin-top: 24px;
+          display: flex;
+          align-items: center;
+        }
+
+        .get-in-touch img {
+          width: 24px;
+          margin-right: 8px;
+        }
+
+        .live-chat {
+          right: 40px;
+          bottom: 40px;
+          position: fixed;
+          background-color: #06d755;
+          width: 60px;
+          height: 60px;
+          border-radius: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.5s;
+        }
+
+        .footer-columns {
+          --bs-gutter-x: 1.5rem;
+          --bs-gutter-y: 0;
+          display: flex;
+          flex-wrap: wrap;
+          margin-top: calc(var(--bs-gutter-y) * -1);
+          margin-right: calc(var(--bs-gutter-x)/ -2);
+          margin-left: calc(var(--bs-gutter-x)/ -2);
+        }
+
+        .collapsable-footer-menu {
+          font-weight: bold;
+          border-bottom: 1px solid lightgray;
+          padding: 15px 18px;
+          cursor: pointer;
+          display: flex;
+          justify-content: space-between;
+        }
+
+        @media screen and (max-width: 992px) {
+          footer {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 1px solid lightgray;
+          }
+
+          .footer-columns {
+            display: block;
+            margin: 0;
+          }
+          
+          .live-chat {
+            right: 24px;
+            bottom: 24px;
+          }
+
+          .newsletter-col {
+            margin-bottom: 32px;
+          }
+
+          .footer-message {
+            flex-direction: column-reverse;
+          }
+
+          .footer-message .final-legend {
+            margin-top: 40px;
+          }
+        }
+
+        .live-chat:hover {
+          background-color: #0cb84e;
+        }
+
+        footer .category-item {
+          display: block;
+          margin-left: 0;
+          padding: 0 0 8px 0;
+        }
+
+        footer .category-item:last-child {
+          padding: 0;
+        }
+
+      </style>
+      <div class="container">
+        <div class="footer-columns">
+          <div class="col-lg-3 d-none d-lg-block">
+            <% if (PREFERENCES.footerMenu && PREFERENCES.footerMenu.length > 0) { %>
+              <% PREFERENCES.footerMenu.forEach(menuItem => { %>
+                <a class="category-item <%= menuItem.classes %>" href="<%= menuItem.link %>"><%= menuItem.text %></a>
+              <% }) %>
+            <% } %>
+          </div>
+          <div class="col-lg-3 col-6 footer-menu-col d-none d-lg-block mb-5">
+            <div class="get-in-touch" style="margin-top: 0;">
+              <img src="/statics/assets/instagram.svg" alt="Instagram icon"><a href="https://www.instagram.com/">@Vivero.uy</a><br>
+            </div>
+            <div class="get-in-touch">
+              <img src="/statics/assets/whatsapp.svg" alt="WhatsApp icon"><a href="tel:099579667">099 579 667</a><br>
+            </div>
+            <div class="get-in-touch mb-5">
+              <img src="/statics/assets/email.svg" alt="Email icon"><a href="mailto:info@tiendu.uy">info@tiendu.uy</a>
+            </div>
+          </div>
+          <div class="d-lg-none positionRelative mb-4">
+            <div class="collapsable-footer-menu toggleMenu">
+              <div>Más información</div>
+              <div>+</div>
+            </div>
+            <div class="collapsableMenu reduceMargin">
+              <% if (PREFERENCES.footerMenu && PREFERENCES.footerMenu.length > 0) { %>
+                <% PREFERENCES.footerMenu.forEach(menuItem => { %>
+                  <a class="menuItem <%= menuItem.classes %>" href="<%= menuItem.link %>"><%= menuItem.text %></a>
+                <% }) %>
+              <% } %>
+            </div>
+            <div class="menuOverlay"></div>
+          </div>
+          <div class="d-lg-none mb-5" style="display: flex; flex-direction: column;">
+            <div class="get-in-touch" style="margin-top: 0;">
+              <img src="/statics/assets/instagram.svg" alt="Instagram icon"><a href="https://www.instagram.com/">@Vivero.uy</a><br>
+            </div>
+            <div class="get-in-touch">
+              <img src="/statics/assets/whatsapp.svg" alt="WhatsApp icon"><a href="tel:099579667">099 579 667</a><br>
+            </div>
+            <div class="get-in-touch d-lg-none">
+              <img src="/statics/assets/email.svg" alt="Email icon"><a href="mailto:info@tiendu.uy">info@tiendu.uy</a>
+            </div>
+          </div>
+          <div class="col-lg-6 newsletter-col">
+            <div id="" class="validatable-input newsletter" style="margin-bottom: 16px;">
+              <div class="secondlyInputInner">
+                <label for="newsletter">Email</label>
+                <input id="newsletter" class="dontDisable" type="text">
+                <button class="subscribe-newsletter">Suscríbete</button>
+              </div>
+              <div class="secondlyErrorMessage"></div>
+            </div>
+            <p>Únete a la comunidad y recibe en tu correo las mejores ofertas.</p>
+          </div>
+        </div>
+        <div style="align-items: center;" class="row footer-message">
+          <div class="col-lg-6 final-legend">
+            <%= PREFERENCES.footerMessage %>
+          </div>
+          <div class="col-lg-6">
+          <img src="/statics/assets/payment_methods-uruguay.svg" alt="Payment methods">
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function subscribe() {
+        $('.newsletter').removeClass('error')
+        const email = $('input#newsletter').val()
+        if (email) { // valid email
+          $('.newsletter button').text('Enviando...').prop('disabled', true)
+          fetch('/api/subscribe', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, _csrf: '<%= locals.csrfToken %>' })
+          })
+            .then((response) => {
+              return response.json()
+            })
+            .then(body => {
+              console.log(body)
+              if (body.error) {
+                throw  new Error(body.fields[0].message);
+              } else {
+                $('.newsletter-col').html('<p style="font-weight: bold; color: green;">¡Te suscribiste!</p><p>Pronto escucharás más sobre nosotros.</p>')
+              }
+              $('.newsletter button').text('Suscríbete').prop('disabled', false)
+            })
+            .catch(function(error) {
+              $('.newsletter .secondlyErrorMessage').text(error.message)
+              $('.newsletter').addClass('error')
+              $('.newsletter button').text('Suscríbete').prop('disabled', false)
+            })
+        }
+      }
+
+      $('.newsletter button').click((event => subscribe()))
+      $('.newsletter input').on('keypress', event => {
+        if(event.which == 13) subscribe()
+      })
+    </script>
+    <a class="live-chat" href="https://api.whatsapp.com/send?phone=59898038479">
+      <img width="38" height="38" src="/statics/assets/whatsapp-white.svg" alt="WhatsApp share icon">
+    </a>
+  </body>
+</html>

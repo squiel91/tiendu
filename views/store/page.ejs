@@ -1,0 +1,14 @@
+<%- include('../partials/store-head.ejs') %>
+<%- include('../partials/breadcrumb.ejs', { pages: [{ label: page.title }] }) %>
+<style>
+  .page-content a {
+    color: #5f9061;
+  }
+</style>
+<h1><%= page.title %></h1>
+<div class="row page-content">
+  <div class="col-md-8">
+    <%- page.content %>
+  </div>
+</div>
+<%- include('../partials/store-tail.ejs') %>

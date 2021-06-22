@@ -1,0 +1,107 @@
+<%- include('../partials/store-head.ejs') %>
+<%- include('../partials/breadcrumb.ejs', { pages: [{ label: 'Registrarse' }] }) %>
+
+<style>
+  .main-action {
+    justify-self: stretch;
+  }
+
+  @media screen and (min-width: 992px) {
+    .register-grid {
+      grid-template: 
+        'email     email    .' auto
+        'firstName lastName .' auto
+        'password  password .' auto
+                                  / 1fr 1fr 2fr;
+    }
+
+    .email {
+      grid-area: email;
+    }
+
+    .firstName {
+      grid-area: firstName;
+    }
+
+    .lastName {
+      grid-area: lastName;
+    }
+
+    .password {
+      grid-area: password
+    }
+
+    .first-2-col {
+      grid-column-start: 1;
+      grid-column: span 2;
+    }
+
+    .main-action {
+      justify-self: start;
+    }
+  }
+
+</style>
+
+<div class="errorMessage"></div>
+<h1>Registrate al Vivero</h1>
+<div class="std-grid register-grid">
+  <%- include('../partials/validatable-input.ejs', { label: 'Email', value: locals.prefillEmail, class: 'first-2-col' }) %>
+  <%- include('../partials/validatable-input.ejs', { label: 'Nombre', name: 'firstName', value: locals.prefillFirstName, class: 'first-col' }) %>
+  <%- include('../partials/validatable-input.ejs', { label: 'Apellido', name: 'lastName', value: locals.prefillLastName }) %>
+  <%- include('../partials/validatable-input.ejs', { label: 'Contraseña', name: 'password', type: 'password', class: 'first-2-col' }) %>
+  <div class="first-2-col">
+    <input type="checkbox" id="remember" checked> <label for="remember">Recordarme en este dispositivo</label>
+  </div>
+  <button class="primary first-2-col no-margin main-action statefull" onclick="register()">Crear cuenta</button>
+  <div class="first-2-col">¿Ya tienes una cuenta? <a href="/cuenta/ingresar<% if (locals.redirect) { %>?redirect=<%= redirect %><% } %>">Ingresa</a></div>
+</div>
+
+<script>
+  function register() {
+    $('.validatable-input input').keydown(event => {
+      $(event.target).parent().parent().removeClass('error')
+    })
+
+    const firstName = $('#firstName').val()
+    const lastName = $('#lastName').val()
+    const email = $('#email').val()
+    const password = $('#password').val()
+    const remember = $('#remember').is(':checked')
+
+    setButtonState({ loading: 'Un momento...' })
+    fetchApi('/api/account/register', {
+      params: { 
+        firstName,
+        lastName,
+        email, 
+        password, 
+        remember, 
+        _csrf: '<%= csrfToken %>'
+      },
+      success: function (data) {
+        setButtonState({ 
+          success: 'Cuenta creada', 
+          callback: function() {
+            const url = new URL(window.location.href)
+            let redirect = url.searchParams.get("redirect")
+    
+            if (redirect) { 
+              window.location.href = redirect.replace('@', '#')
+            } else {
+              window.location.href = '/'
+            }
+          }
+        })
+      },
+      executeOnError: function () {
+        setButtonState({ default: true })
+      }
+    })
+  }
+
+  $('.validatable-input input').on('keypress', event => {
+    if(event.which == 13) register()
+  })
+</script>
+<%- include('../partials/store-tail.ejs') %>

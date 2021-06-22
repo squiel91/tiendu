@@ -1,0 +1,13 @@
+<%
+  const roundedHalf = Math.round(value * 2) / 2 // rounded to half
+
+  for (let i = 1; i <= Math.floor(roundedHalf); i++) { %>
+    <img class="star <%if (locals.small) { %> small<% } %>" src="/statics/assets/star-fill.svg">
+  <% }
+  if ((roundedHalf % 1) > 0) { %>
+    <img class="star <%if (locals.small) { %> small<% } %>" src="/statics/assets/star-half.svg">
+  <% }
+  for (let i = Math.ceil(roundedHalf); i < 5; i++) { %>
+    <img class="star <%if (locals.small) { %> small<% } %>" src="/statics/assets/star-empty.svg">
+  <% }
+%>

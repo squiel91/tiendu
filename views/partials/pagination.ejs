@@ -1,0 +1,29 @@
+<% if (paginate && paginate.pageCount > 1) { %>
+  <section class="pagination">
+    <% if (paginate.currentPage > 1) { %>
+      <a href="?page=<%= paginate.currentPage - 1 %> " disabled>←</a>
+    <% } %>
+    <% for (let pageNum = 1; pageNum <= paginate.pageCount; pageNum++) { %>
+      <a href="?page=<%= pageNum %>" class="<%= pageNum == paginate.currentPage? 'active' : '' %>"><%= pageNum %></a>
+    <% } %>
+    <% if (paginate.currentPage < paginate.pageCount) { %>
+      <a href="?page=<%= paginate.currentPage + 1 %>">→</a>
+    <% } %>
+    <style>
+      .pagination {
+        margin: 20px 0;
+      }
+      .pagination a {
+        margin: 0 8px;
+      }
+
+      .pagination a:hover {
+        color: #5f9061;
+      }
+
+      .pagination a.active {
+        color: lightgrey;
+      }
+    </style>
+  </section>
+<% } %>

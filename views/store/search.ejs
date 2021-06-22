@@ -1,0 +1,46 @@
+<%- include('../partials/store-head.ejs') %>
+<%- include('../partials/breadcrumb.ejs', { pages: [{ label: 'Busqueda' }] }) %>
+
+<style>
+  .searchInfo {
+    align-items: center;
+    margin-bottom: 16px;
+  }
+</style>
+
+<% if (products && products.length > 0) { %>
+  <div class="row searchInfo">
+    <div class="col-md-8">
+      <div class="store__category__description">
+        <p><%= products.length %> resultado<%= products.length == 1? '' :'s' %> para tu busqueda</p>
+      </div>
+    </div>
+    <div class="col-md-4 order-col">
+      <%- include('../partials/validatable-input.ejs', { label: 'Orden', value: locals.order, options: [
+        { value: 'recomendado', text: 'Relevancia' },
+        { value: 'precio', text: 'Precio (económico primero)' },
+        { value: 'nombre', text: 'Nombre' }
+      ] }) %>
+    </div>
+  </div>
+<% } %>
+<div class="shearch__listing">
+  <% if (products && products.length > 0) { %>
+    <%- include('./snippets/list-products.ejs', { products: products, empty: '' }) %> 
+  <% } else { %> 
+    <div class="emptyContainer">
+      <img class="empty" src="/statics/assets/no-found.svg" alt="">
+      <p>Sin resultados para tu <strong>Busqueda</strong>.<br>Prueba con otros términos.</p>
+    </div>
+  <% } %> 
+</div>
+
+<script>
+  const query = '<%= locals.query %>'
+  $('select#orden').change(function (event) {
+    const newOrder = $(event.target).val()
+    location.href = `${location.protocol}//${location.host}${location.pathname}?q=${query}&orden=${newOrder}`
+  })
+</script>
+
+<%- include('../partials/store-tail.ejs') %>

@@ -1,0 +1,318 @@
+<%# pass a product argument if edition %>
+<%- include('./partials/admin-head.ejs') %>
+<%- include('./partials/breadcrumb.ejs', { pages: [{ label: 'Productos', link: '/admin/products' }, { label: 'Edición' } ] }) %>
+
+<style>
+  .product-editor-grid {
+    display: grid;
+    grid-gap: 32px;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .first-col {
+    grid-column-start: 1;
+  }
+  
+  .span-2-col {
+    grid-column-end: span 2;
+  }
+    
+  .span-3-col {
+    grid-column-end: span 3;
+  }
+
+  .pell-content p:first-child {
+    margin-top: 0;
+  }
+
+  @media screen and (max-width: 992px) {
+    .product-editor-grid {
+      grid-template-columns: 1fr;
+      grid-gap: 16px;
+    }
+
+    .first-col {
+      grid-column-start: unset;
+    }
+    
+    .span-2-col {
+      grid-column-end: unset;
+    }
+
+    .span-3-col {
+      grid-column-end: unset;
+    }
+  }
+
+  /* variants */
+  .variants-vertical-grid {
+    display: grid;
+    grid-gap: 16px;
+  }
+
+  .variants-horizontal-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    align-items: center;
+    grid-gap: 16px;
+  }
+</style>
+
+<div id="vue-product-editor" v-cloak>
+  <div style="display: flex;">
+    <h1 style="flex-grow: 1; margin-bottom: 40px;">Producto</h1>
+    <div>
+      <tiendu-secondary-button :disabled="!productId" :link="`/productos/${originalHandle}`" style="margin-right: 8px;">
+        <div>
+          <span class="hide-mobile">
+            Visualizar
+          </span>
+          <i class="show-mobile bi bi-box-arrow-up-right"></i>
+        </div>
+      </tiendu-secondary-button>
+      <tiendu-secondary-button :disabled="!productId" @click="remove()">
+        <div>
+          <span class="hide-mobile">
+            Borrar
+          </span>
+          <i class="show-mobile bi bi-trash-fill"></i>
+        </div>
+      </tiendu-secondary-button>
+    </div>
+  </div>
+  <div class="product-editor-grid">
+    <tiendu-input error="true" label="Título" id="title" v-model="title" :error="titleError" class="span-2-col" help="El título principal, que se muestra arriba de la página."></tiendu-input> 
+    <tiendu-input :label="handleRoute" id="handle" @input="handleChanged()" v-model="handle" :error="handleError" help="Es como se verá la dirección del producto en la barra superior del navegador. Debe ser único para cada página (no se puede repetir)."></tiendu-input>
+    <tiendu-input label="Precio $" id="price" v-model="price" type="number" step="1" :error="priceError"></tiendu-input>
+    <tiendu-input label="Precio referencia $" id="compareAt" type="number" step="1" v-model="compareAt" :error="compareAtError" help="Puramente de márketing. Es el precio que aparece como el que estaba antes de hacer un descuento. Aparece tachado al lado del precio real."></tiendu-input>
+    <tiendu-input label="Stock" v-model="stock" id="stock" type="number" step="1" placeholder="ilimitado" :error="stockError" help="Cada vez que se compra un producto el stock baja. Se puede dejar vacío para no llevara un registro del stock."></tiendu-input>
+    <div class="first-col span-3-col" style="align-items: center; display: flex;">
+      <input type="checkbox" v-model="hasVariants" name="has-variants" id="has-variants">
+      <label for="has-variants" style="margin-left: 8px;">Tiene variantes</label>
+    </div>
+    <div v-show="hasVariants" style="overflow-y: auto;" class="first-col span-3-col">
+      <variants :default-price="price" :default-compare-at="compareAt" :default-stock="stock" v-model="variantsData"></variants>
+    </div>
+    <div class="first-col span-3-col">
+      <tiendu-textarea ref="textarea" @input="description = $event"></tiendu-textarea>
+    </div>
+    <image-picker v-model="images" class="first-col span-3-col">
+      <span>
+        Seleccionar imágenes
+      </span>
+    </image-picker>
+    <div class="first-col span-3-col">
+      <h2>Categorías</h2>
+      <static-selectable-table :items="allCategories" :cols="colCategories"></static-table>
+    </div>
+    <div class="first-col span-3-col" style="display: flex;">
+      <input type="checkbox" id="listed" v-model="listed" style="margin-right: 8px"><label for="listed">Listado</label>
+      <input type="checkbox" id="featured" v-model="featured" style="margin-right: 8px; margin-left: 24px;"><label for="featured">Destacado</label>
+    </div>
+    <div v-if="errorMessage" class="error-message first-col span-2-col">
+      <i class="bi bi-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+    <div class="first-col span-3-col">
+      <tiendu-button normal-text="Guardar producto" @click="save()"></tiendu-button>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/pell"></script>
+<script type="module">
+  import tienduSecondaryButton from '/statics/scripts/tiendu-secondary-button.vue.js'
+  import tienduTextarea from '/statics/scripts/tiendu-textarea.vue.js'
+  import tienduInput from '/statics/scripts/tiendu-input.vue.js'
+  import staticSelectableTable from '/statics/scripts/tiendu-static-selectable-table.vue.js'
+  import tienduButton from '/statics/scripts/tiendu-button.vue.js'
+  import imagePicker from '/statics/scripts/tiendu-image-picker.vue.js'
+  import variants from '/statics/scripts/product-variants.vue.js'
+
+
+  axios.defaults.baseURL = `${window.location.protocol}//${window.location.host}/api/`
+  const productId = (window.location.pathname.split('/')).pop()
+
+  const vueApp = new Vue({
+    el: '#vue-product-editor',
+    data() {
+      return {
+        productId: undefined,
+        allCategories: [],
+        images: [],
+        colCategories: [
+          { 
+            label: 'Título', 
+            val: 'title',
+            span: 2,
+            html: true,
+            format: (title, category) => (category.listed? '<i class="bi bi-circle-fill published"></i>' : '<i class="bi bi-circle-fill not published"></i>') + title.replace( /(<([^>]+)>)/ig, '') 
+          },
+          { label: '# Productos', val: 'products', format: products => products.length }
+        ],
+        errorMessage: '',
+        title: '',
+        titleError: '',
+        handle: '',
+        handleError: '',
+        originalHandle: '',
+        description: '',
+        price: undefined,
+        priceError: '',
+        compareAt: undefined,
+        compareAtError: '',
+        stock: undefined,
+        stockError: '',
+        hasVariants: false,
+        variantsData: {
+          options: [''],
+          variants: []
+        },
+        products: [], // deprecated
+        handleModified: false,
+        listed: true,
+        featured: false,
+        loading: false
+      }
+    },
+    components: {
+      tienduButton,
+      tienduSecondaryButton,
+      tienduTextarea,
+      tienduInput,
+      imagePicker,
+      staticSelectableTable,
+      variants
+    },
+    computed: {
+      handleRoute() {
+        return window.location.host + '/productos/'
+      }
+    },
+    watch: {
+      title() {
+        this.autocompleteHandle()
+      }
+    },
+    methods: {
+      async getAllCategories () {
+        const response = await axios.get(`categories`, { params: { all: true } })
+          this.allCategories = response.data.categories?.map(category => {
+            category.included = category.products.includes(this.productId)
+            return category
+          })
+          this.allCategories.sort((cat1, cat2) => (cat1.included === cat2.included)? 0 : cat1.included? -1 : 1)
+      },
+      handleChanged() {
+        this.handleModified = this.handle.length > 0
+      },
+      autocompleteHandle() {
+        if (this.title) {
+          if (!this.handleModified) {
+            this.handle = this.title
+              .normalize("NFD")
+              .replace('ñ', 'n')
+              .replace(/[^\w\s]/g, "")
+              .replaceAll(' ', '-')
+              .toLowerCase()
+          }
+        }
+      },
+      async save () {
+        this.handleError = ''
+        this.titleError = ''
+        this.errorMessage = ''
+
+        try {
+          const params = {
+            title: this.title,
+            handle: this.handle,
+            price: this.price,
+            compareAt: this.compareAt || undefined,
+            stock: this.stock === 0? 0 : this.stock || undefined,
+            hasVariants: this.hasVariants,
+            categories: this.allCategories.filter(cat => cat.included).map(cat => cat.id),
+            description: this.description,
+            images: this.images?.map(img => img.id), 
+            listed: this.listed,
+            featured: this.featured
+          }
+          if (this.hasVariants) {
+            params.options = this.variantsData.options
+            params.variants = this.variantsData.variants
+          }
+          const response = await (this.productId? axios.patch : axios.post)(this.productId? `products/${this.productId}` : 'products', params)
+          
+          window.location.href = '/admin/products'
+        } catch (error) {
+          if (error.response?.data?.fields) {
+            this.errorMessage = 'Se detectó algun error. Quedaron marcados arriba en rojo.' 
+            const errorFields = error.response.data.fields
+            for (const errorField of errorFields) {
+              if ((errorField.name + 'Error') in this)
+              this[errorField.name + 'Error'] = errorField.message
+            }
+          } else {
+            this.errorMessage = error.response?.data?.message || 'Ocurrió un error en el servidor' 
+          }
+        }
+      },
+      async remove () {
+        try {
+          const response = await axios.delete(`products/${this.productId}`)
+          window.location.href = '/admin/products'
+        } catch (error) {
+          alert('Ocurrió un error')  
+          console.error(error)
+        }
+      }
+    },
+    async created () {
+      try {
+        const productId = (window.location.pathname.split('/')).pop()
+
+        if (productId !== 'new') {
+          this.productId = productId
+          const response = await axios.get(`products/${productId}`)
+          
+          if (response.status === 200 && response.data.success) {
+            const product = response.data.product
+            this.title = product.title
+            this.products = product.products
+            this.handle = product.handle
+            this.price = product.price
+            this.compareAt = product.compareAt
+            this.stock = product.stock
+            this.hasVariants = product.hasVariants
+            if (this.hasVariants) {
+              this.variantsData = {
+                options: product.options,
+                variants: product.variants
+              }
+            }
+            this.description = product.description
+            this.$refs.textarea.setUp(this.description)
+            this.images = product.images || []
+            this.originalHandle = product.handle
+            this.handleModified = product.handle.length > 0 
+            this.listed = product.listed,
+            this.featured =  product.featured
+
+          } else {
+            this.error = true
+          }
+
+          await this.getAllCategories()
+        } else {
+          await this.getAllCategories()
+        }
+      } catch (error) {
+        this.error = true
+        console.error(error)
+      }
+    }
+  })
+
+</script>
+
+<%- include('./partials/admin-tail.ejs') %>

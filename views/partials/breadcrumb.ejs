@@ -1,0 +1,28 @@
+<%# Homepage is allways added first. The last page is assumend to be the active one %>
+<style>
+  .breadcrumb__separator {
+    width: 8px;
+    margin: 0 8px;
+  }
+
+  .breadcrumb-el {
+    margin-bottom:1rem;
+    margin-top:1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+<div class="breadcrumb-el" aria-label="breadcrumb">
+  <a href="/">Inicio</a>
+  <% const separator = '<img class="breadcrumb__separator" src="/statics/assets/breadcrumb-separator.svg">' %> 
+  <% const activePage = pages.pop(pages.length - 1) %>
+  <% pages.forEach(page => { %>
+    <%- separator %>
+    <a class="breadcrumb__link" href="<%= page.link %>"><%= page.label %></a>
+  <% }) %>
+  <%- separator %>
+  <a aria-current="<%= activePage.label %>"><%= activePage.label %></a>
+
+
+</div>

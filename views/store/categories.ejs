@@ -1,0 +1,8 @@
+<%- include('../partials/store-head.ejs') %>
+  <% for (let category of categories) { %>
+    <div class="store__category">
+      <h2><a href="/categories/<%= category.handle %>"><%= category.title %> (<%= category.products.length %> deal<%= category.products.length == 1? '' : 's' %>)</a></h2>
+      <%- include('./snippets/list-products.ejs', { products: category.products, empty: "No hay productos en esta categoría aún." }) %>
+    </div>
+  <% } %>
+<%- include('../partials/store-tail.ejs') %>

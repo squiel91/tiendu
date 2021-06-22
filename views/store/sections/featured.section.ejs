@@ -1,0 +1,5 @@
+<% if (featuredProducts && featuredProducts.length > 0) { %>
+  <section>
+    <%- include('../snippets/list-products.ejs', { products: featuredProducts }) %>
+  </section>
+<% } %>

@@ -1,0 +1,62 @@
+<style>
+  .add-to-cart-container {
+    display: flex;
+    margin-top: 20px;
+  }
+
+  button.add-to-cart {
+    margin: 0;
+  }
+
+  @media screen and (max-width: 992px) {
+    button.add-to-cart {
+      flex-grow: 1;
+      flex-shrink: 0;
+    }
+  }
+
+</style>
+<div class="add-to-cart-container">
+  <div class="secondlyInput quantity"> 
+    <button id="decreaseQuantity" onclick="modifyCart(-1)" disabled>-</button>
+    <span id="cartQuantity"><%= [null, undefined].includes(stock) || stock > 0? 1 : 0 %></span>
+    <button id="increaseQuantity" onclick="modifyCart(1)" <% if (![null, undefined].includes(stock) && stock <= 1) { %> disabled <% } %>>+</button>
+  </div>
+  <% if ([null, undefined].includes(stock) || stock > 0) { %>
+    <button class="primary add-to-cart" onclick="addProdToCart()">Agregar al carrito</button>
+  <% } else { %> 
+    <button class="primary add-to-cart" disabled>Agotado</button>
+  <% } %> 
+</div>
+
+<script>
+  const maxStock = <%= stock || 9 %>;
+  productQuantity = 1
+
+  function modifyCart(modify) {
+    productQuantity += modify
+
+    $('#decreaseQuantity').attr("disabled", productQuantity == 1);
+    $('#increaseQuantity').attr("disabled", productQuantity >= maxStock);
+
+    $('#cartQuantity').text(productQuantity)
+  }
+
+  function addProdToCart() {
+    const email = $('#email').val()
+    const password = $('#password').val()
+    const remember = $('#remember').is(':checked')
+
+    fetchApi('/api/cart', {
+      params: { 
+        productId: '<%= product._id %>',
+        quantity: productQuantity,
+        variantId: <%= variantIndex || 'undefined'%>,
+        _csrf: '<%= csrfToken %>'
+      },
+      success: function (data) {
+        window.location.href = '/carrito'
+      }
+    })
+  }
+</script>

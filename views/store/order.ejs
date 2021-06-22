@@ -1,0 +1,157 @@
+<%- include('../partials/store-head.ejs') %>
+
+<%
+  const pages = [{ label: 'Orden' }]
+  if (locals.fromAccount) {
+    pages.unshift({ label: 'Cuenta', link: `/account` })
+  }
+%>
+<%- include('../partials/breadcrumb.ejs', { pages }) %>
+
+<style>
+  .show-print {
+    display: none;
+  }
+
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    #printable, #printable * {
+      visibility: visible;
+    }
+    #printable {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .show-print {
+      display: block;
+    }
+
+    .hide-print {
+      display: none;
+    }
+  }
+
+  .print-button {
+    color: white;
+    background-color: cornflowerblue !important;
+    bottom: 120px !important;
+    border: none;
+  }
+
+  @media screen and (max-width: 992px) {
+    .print-button {
+      color: white;
+      background-color: cornflowerblue !important;
+      bottom: 24px !important;
+      right: 100px !important;
+      border: none;
+      z-index: 100;
+    }
+  }
+</style>
+
+<div id="printable">
+  <div class="show-print">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h1 style="color: #5f9061; margin-bottom: 10px;">Vivero</h1>
+      <img class="logo" src="/statics/assets/logo3.png">
+    </div>
+  </div>
+  <% let hasTitle = false 
+    if (order.status === 'impaga') { 
+      hasTitle = true %>
+    <h2>Paga $<%= order.billed %> en el <span style="text-transform: capitalize;"><%= order.paymentMethod %></span> más cercano para completar tu compra.</h2>
+    <p class="mb-5">Decile al cajero que es un <b>pago para MercadoPago</b> con el <b>número de documento <%= order.personal.idNumber %></b>.<br>Tenés hasta 72 horas para realizar el pago, de lo contrario tu orden será cancelada.</p>
+  <% } %>
+  <% if (order.status === 'procesando pago') { 
+    hasTitle = true %>
+    <h2>Aún no podemos confirmar tu pago.</h2>
+    <p class="mb-5">Aguardamos ahora la confirmación de la compañia de tu tarjeta, que debería ser a la brevedad. Te informaremos a tu email enseguida nos llegue la confirmacón (o rechazo) de pago.</p>
+  <% } %>
+  <% if (order.paymentMethod === 'card' && order.status === 'a confirmar' && locals.mensaje === 'exito') { 
+    hasTitle = true %>
+    <h1>¡Hemos recibido tu pedido!</h1>
+    <p class="mb-5">Recibirás un email con la confirmación de tu orden a la brevedad.</p>
+  <% } %>
+  <% if (!hasTitle) { %>
+    <h1>Orden</h1>
+  <% } %>
+
+  <button class="hide-print live-chat print-button" onclick="window.print();">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+      <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+      <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+    </svg>
+  </button>
+
+  <div class="row">
+    <div class="col-md-6">
+      <table>
+        <tr>
+          <th>Estado*</th>
+          <td><span class="badge bg-primary" style="text-transform: uppercase;"><%= order.status %></span></td>
+        </tr>
+        <tr>
+          <th>Fecha</th>
+          <td><%= order.prettyCreated(true) %></td>
+        </tr>
+        <tr>
+          <th>Nombre</th>
+          <td><%= order.personal.firstName %> <%= owner? order.personal.lastName : order.personal.lastName.replace(/[^ ]/g, '*') %></td>
+        </tr>
+        <tr>
+          <th>Contacto</th>  
+          <td>
+            <%= owner? order.personal.phone : order.personal.phone.substring(0, order.personal.phone.length -2).replace(/[^ ]/g, '*') + order.personal.phone.substring(order.personal.phone.length -2) %> /
+            <%= owner? order.personal.email : order.personal.email.split('@')[0].replace(/[^ ]/g, '*') + '@' + order.personal.email.split('@')[1] %></td>      
+        </tr>
+        <tr>
+          <th>Pagado</th>  
+          <td>$ <%= order.billed %> <% if (order.discount?.coupon) { %>(<%= order.discount.description || order.discount.coupon %>)<% } %></td>      
+        </tr>
+        <tr>
+          <th>Envío</th>  
+          <td><span class="badge bg-secondary" style="text-transform: uppercase;">Gratis</span> <%= owner? order.shipping.address : order.shipping.address.replace(/[^ ]/g, '*') %>, <%= order.shipping.neighbourhood %>, <%= order.shipping.state %></td>      
+        </tr>
+        <% if (order.shipping.tracking) { %>
+          <tr>
+            <th>Tracking</th>
+            <td>
+              <%= order.shipping.tracking %>
+          </tr>
+        <% } %>
+      </table>
+      <p style="margin-top: 16px;">(*) Te enviaremos un email cada vez que tu orden cambie de estado.</p>
+    </div>
+    <div class="col-md-6 mb-4">
+      <table>
+        <tr>
+          <th>Producto</th>
+          <th>Precio unitario</th>
+          <th>Cantidad</th>
+        </tr>
+        <% for (let item of order.items) { %>
+          <tr>
+            <td><a href="/productos/<%= item.handle %>"><%= item.title %></a>
+              <% if (item.variant) { %>
+              <br><%= item.variant %>
+              <% } %>
+            </td>
+            <td>
+              $<%= item.unitPrice %>
+            </td>
+            <td><%= item.quantity %></td>
+          </tr>
+        <% } %>
+      </table>
+    </div>
+  </div>
+  <div class="alert alert-primary" style="color: black;" role="alert">
+    En caso de duda escribinos a <a href="https://api.whatsapp.com/send?phone=59898038479">nuestro WhatsApp</a>, <a href="mailto:info@tiendu.uy">info@tiendu.uy</a> o llamando al <a href="tel:+099579667">099 579 667</a>.
+  </div>
+</div>
+<%- include('../partials/store-tail.ejs') %>

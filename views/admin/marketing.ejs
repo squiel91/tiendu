@@ -1,0 +1,48 @@
+<%- include('./partials/admin-head.ejs') %>
+<%- include('./partials/breadcrumb.ejs', { pages: [{ label: 'Cupón' } ] }) %>
+
+<div id="vue-marketing" v-cloak>
+  <h1>Cupones</h1>
+  <vue-table :cols="colCoup" resource-name="coupons"></vue-table>
+  <a href="/admin/coupons/new"><button class="primary" style="margin-bottom: 40px;">Nuevo cupón</button></a>
+  <h1>Subscriptores</h1>
+  <vue-table :cols="colSubsc" resource-name="subscriptions" :link="false"></vue-table>
+</div>
+
+<script type="module">
+  import vueTable from '/statics/scripts/tiendu-dynamic-table.vue.js'
+  axios.defaults.baseURL = `${window.location.protocol}//${window.location.host}/api/`
+  
+  new Vue({
+    el: '#vue-marketing',
+    data() {
+      return {
+        colCoup: [
+          {
+            label: 'Código',
+            val: 'code',
+            html: true,
+            format: (code, coupon) => (coupon.active && (!coupon.maxUses || coupon.timesUsed < coupon.maxUses) ? '<i class="bi bi-circle-fill published"></i>' : '<i class="bi bi-circle-fill not published"></i>') + code
+          },
+          { label: 'Descripción', val: 'description', hideMobile: true },
+          { label: 'Descuento', format: (_, coupon) => coupon.percentage? coupon.percentage + '%' :  '$' + coupon.amount },
+          { 
+            label: '# Usos',
+            val: 'timesUsed',
+            format: (timesUsed, coupon) => timesUsed + (coupon.maxUses ? ` / ${coupon.maxUses}` : '')
+          }
+        ],
+        colSubsc: [
+          { label: 'Email', val: 'email' },
+          { label: 'Desde', val: 'since' }
+        ] 
+      }
+    },
+    components: {
+      'vue-table': vueTable
+    }
+  })
+
+</script>
+
+<%- include('./partials/admin-tail.ejs') %>

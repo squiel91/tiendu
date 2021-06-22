@@ -1,0 +1,876 @@
+<%- include('../partials/store-head.ejs') %>
+<script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
+
+<%# styles %>
+<style>
+
+  .checkout-button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  input[type="checkbox"] {
+    margin-right: 12px;
+  }
+
+  input[type="radio"] {
+    margin-right: 12px;
+  }
+
+  .ship-container input[type="radio"] {
+    margin-top: 6px;
+  }
+
+  .checkout-step {
+    display: flex;
+    align-items: center;
+  }
+
+  .checkout-step .indicator {
+    font-size: small;
+    font-family: 'Karla';
+    padding: 4px 8px;
+    background-color: #91998e;
+    border-radius: 12px;
+    color: white;
+    display: inline-block;
+    margin-right: 8px;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .ship-label-container div:first-child {
+    font-weight: bold;
+  }
+
+  .ship-label-container {
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1;
+    flex-wrap: wrap;
+  }
+
+  .ship-label-container div:first-child {
+    flex-grow: 1;
+    padding-right: 30px;
+  }
+
+  section:not(.last) {
+    margin-bottom: 60px;
+  }
+
+  .required {
+    font-weight: bold;
+    color: #777e86;
+  }
+
+  h3 {
+      font-size:unset;
+      font-weight: bold;
+      margin-bottom: 12px;
+  }
+
+  .std-grid > h3 {
+    margin-bottom: 0;
+  }
+
+  .compact-grid {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+  }
+
+  .tablet-up-help {
+    display: none;
+  }
+
+  .main-action {
+    justify-self: stretch;
+  }
+
+  .logo-mercadopago {
+    width: 100px;
+    justify-self: start;
+  }
+
+  .accordion-body {
+    padding: 1rem 1rem;
+  }
+
+  .payment-network-logo {
+    width: 200px;
+    margin-bottom: 20px;
+  }
+
+  @media screen and (min-width: 992px) {
+
+    .main-action {
+      justify-self: start;
+    }
+
+    .mobile-help {
+      display: none;
+    }
+
+    .tablet-up-help {
+      display: block;
+    }
+
+    section:not(.last) {
+      margin-bottom: 80px;
+    }
+
+    .logo-mercadopago {
+      width: 120px;
+      justify-self: end;
+    }
+
+    .checkout-button-container {
+      justify-content: start;
+    }
+
+    .contact-grid {
+      grid-template-columns: 1fr 1fr 2fr;
+    }
+
+    .ship-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .payment-grid {
+      grid-template-columns: 1fr 1fr 2fr;
+    }
+
+    .payment-card-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .review-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .items-review-container {
+      grid-area: 1 / 2 / -1 / -1;
+      align-self: start;
+    }
+
+    .first-col {
+      grid-column-start: 1;
+    }
+
+    .last-col {
+      grid-column-end: -1;
+    }
+
+    .span-col-2 {
+      grid-column-end: span 2;
+    }
+
+    .span-row-2 {
+      grid-row-end: span 2;
+    }
+  }
+
+  .accordion-body {
+    padding: 1.25rem 1.25rem;
+  }
+
+  .discounted {
+    color: white;
+    text-decoration: line-through;
+  }
+</style>
+
+<%# content %>
+<%- include('../partials/breadcrumb.ejs', { 
+  pages: [
+    { label: 'Carrito', link: '/carrito' },
+    { label: 'Checkout' }
+  ] 
+}) %>
+
+<h1>Checkout</h1>
+
+<section>
+  <h2 class="checkout-step">
+    <span class="indicator">1/4</span>  
+    Información de contacto
+  </h2>
+  <div class="std-grid contact-grid">
+    <%- include('../partials/validatable-input.ejs', { label: 'Email', value: locals.user?.email, class: 'first-col span-col-2', tab: 1, mobileHelp: 'Te mandaremos los los datos de la orden.  Además te notificaremos cada vez que la orden cambie de estado.' }) %>
+    <div class="tablet-up-help">
+      Te mandaremos los los datos de la orden.  Además te notificaremos cada vez que la orden cambie de estado.
+    </div>
+    <div class="login span-col-2 hidden">
+      Ya existe una cuenta con ese mismo email.<br><a href="/cuenta/ingresar" style="color: #5f9061;">Inicia sesión</a> o continúa como invitado.
+    </div>
+    <%- include('../partials/validatable-input.ejs', { label: 'Nombre', name: 'firstName', value: locals.user?.firstName, class: 'first-col', tab: 2 }) %>
+    <%- include('../partials/validatable-input.ejs', { label: 'Apellido', name: 'lastName', value: locals.user?.lastName, tab: 3 }) %> 
+    <div class="register span-col-2 hidden">
+      Solo resta definir una contraseña para crear tu cuenta. <br><a href="/register" style="color: #5f9061;">Crea una cuenta</a> o continúa como invitado.
+    </div>
+    <%- include('../partials/validatable-input.ejs', { label: 'Teléfono', name: 'phone', class: 'first-col span-col-2', tab: 4, mobileHelp: 'Preferentemente número de celular. Nos comunicarémos contigo para coordinar el envío o avisarte que la orden esta lista para retirarla.' }) %>
+    <div class="tablet-up-help">
+      Preferentemente número de celular. Nos comunicarémos contigo para coordinar el envío o avisarte que la orden esta lista para retirarla.
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="checkout-step">
+    <span class="indicator">2/4</span> 
+    Envío sin costo
+  </h2>
+  <% 
+    const workingDaysNames = {
+      1: 'Lunes',
+      2: 'Martes',
+      3: 'Miércoles',
+      4: 'Jueves',
+      5: 'Viernes',
+      6: 'Sabado',
+      0: 'Domingo'
+    }
+    let currentDate = new Date();
+    let workingDays = 0
+
+    let freeShippingDay, freeShippingDate
+
+    while (true) {
+      currentDate.setDate(currentDate.getDate() + 1)
+      workingDays += 1
+      if (workingDays === 4) {
+        freeShippingDay = workingDaysNames[currentDate.getDay()]
+        freeShippingDate = currentDate.getDate()
+        break
+      }
+    }
+
+  %>
+  <div class="std-grid ship-grid">
+    <div>Recíbelo el <%= freeShippingDay %> <%= freeShippingDate %> dentro de Uruguay (5 días hábiles)</div>
+    <%- include('../partials/validatable-input.ejs', { label: 'Departamento', value: 'Montevideo', name: 'state', options: [
+      'Artigas',
+      'Canelones',
+      'Cerro Largo',
+      'Colonia',
+      'Durazno',
+      'Flores',
+      'Florida',
+      'Lavalleja',
+      'Maldonado',
+      'Montevideo',
+      'Paysandú',
+      'Río Negro',
+      'Rivera',
+      'Rocha',
+      'Salto',
+      'San José',
+      'Soriano',
+      'Tacuarembó',
+      'Treinta y Tres'
+    ], class: 'first-col', tab: 5 }) %>
+    <%- include('../partials/validatable-input.ejs', { label: 'Barrio', name: 'neighbourhood', class: 'first-col', tab: 5 }) %>
+    <%- include('../partials/validatable-input.ejs', { label: 'Dirección', name: 'address', class: 'first-col', tab: 6, mobileHelp: 'La dirección donde te mandaremos tu orden. Incluye la calle, número de puerta y número de apartamento (si aplica)' }) %>
+    <div class="tablet-up-help">
+      La dirección donde te mandaremos tu orden. Incluye la calle, número de puerta y número de apartamento (si aplica)
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="checkout-step">
+    <span class="indicator">3/4</span> 
+    Revisa tu orden
+  </h2>
+  <div class="std-grid review-grid">
+    <div class="contact-review-container first-col">
+      <h3>Información de contacto</h3>
+      <div class="compact-grid">
+        <div class="review-info-label">Nombre</div><div class="review-info-value" id="name-review"></div>
+        <div class="review-info-label">Email</div><div class="review-info-value" id="email-review"></div>
+        <div class="review-info-label">Teléfono</div><div class="review-info-value" id="phone-review"></div>
+      </div>
+    </div>
+    <div id="ship-review-container" style="display: none">
+      <h3>Retiro</h3>
+      <div class="compact-grid">
+        <div class="review-info-label">Dirección</div> <div id="address-review"></div>
+        <div class="review-info-label">Recibelo</div> <div id="arrive-review"><span class="required">Elije la forma de entrega</span></div>
+      </div>
+    </div>
+    <div class="items-review-container">
+      <h3>Items</h3>
+      <% cart.forEach(item => { %>
+        <div><%= item.quantity %> X <%= item.product.title %> <% if (item.variantId) { %><%= ': ' +  item.product.getVariant(item.variantId).values.join(', ') %><% } %> ($<%= item.product.totalPrice(item.variantId) %> 
+        c/u)</div>
+      <% }) %>
+      <div id='items-review-express' class="items-review-ship">1 X Envío gratis ($<span class="expressShipment">0</span>)</div>
+    
+      <div style="margin-top: 12px; font-weight: bold;" class="compact-grid"><div>Total</div><div class="totalPrice"><span class="required">Elije la forma de entrega</span></div></div>
+    </div>  
+  </div>
+</section>
+<section class="last">
+  <h2 class="checkout-step">
+    <span class="indicator">4/4</span> 
+    Pago
+  </h2>
+  <div class="std-grid payment-grid">
+    <p class="show-free first-col span-col-2" style="display: none; margin-bottom: 0; font-style: italic;">Tu orden no requiere pago.</p>
+    <h3 class="first-col span-col-2 hide-free">Documento</h3>
+    <%- include('../partials/validatable-input.ejs', { label: 'Tipo', name: 'docType', options: [], dataCheckout: 'docType', class: 'first-col hide-free', tab: 9 }) %>
+    <%- include('../partials/validatable-input.ejs', { label: 'Número', name: 'docNumber', class: 'hide-free', dataCheckout: 'docNumber', tab: 10, mobileHelp: 'Documento de la persona que realizará el pago, sin puntos ni guión' }) %>
+    <div class="tablet-up-help hide-free">Documento de la persona que realizará el pago, sin puntos ni guión.</div>
+    
+    <h3 class="first-col span-col-2 hide-free">Forma de pago</h3>
+
+    <div class="accordion first-column span-col-2 hide-free" id="payment-methods">
+      <div class="accordion-item">
+        <b class="accordion-header" id="headingOne">
+          <label for="payment-method-card" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            <input type="radio" id="payment-method-card" name="paymentMethod" value="card"> Tarjeta de crédito / débito
+          </label>
+        </b>
+        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#payment-methods">
+          <form class="accordion-body" method="post" id="cardPaymentForm">
+            <div class="std-grid payment-card-grid">
+              <div class="first-col span-col-2">Ni MercadoPago ni nosotros almacenaremos los datos de tu tarjeta. Ver <a href="/paginas/politica-de-privacidad" target="_blank">política de privacidad</a>.</div> 
+              <img class="first-col span-col-2" style="max-width: 450px;" src="/statics/assets/payment_methods-cards.svg" alt="tarjetas soportadas">
+              <%- include('../partials/validatable-input.ejs', { label: 'Titular', name: 'cardholderName', dataCheckout: 'cardholderName', value: locals.user? `${user.firstName} ${user.lastName}` : '', class:"first-col span-col-2", tab: 11, help: 'Nombre y apellido tal cual aparece en el frente de la tarjeta.' }) %> 
+              <%- include('../partials/validatable-input.ejs', { label: 'Número', type: 'card', name: 'cardNumberMaster', dataCheckout: 'cardNumber', class:"first-col span-col-2", tab: 12 }) %> 
+              <%- include('../partials/validatable-input.ejs', { label: 'Vence (MM/YY)', name: 'cardExp', type: 'cardExp', class: 'first-col', tab: 13 }) %> 
+              <%- include('../partials/validatable-input.ejs', { label: 'CVV/CVC', name: 'cvc', type: 'cvc', dataCheckout: 'securityCode', help: 'Un código de 3 digitos, usualmente aparece en el reverso de la tarjeta', tab: 14 }) %> 
+              <div class="issuer-container hidden">
+                <%- include('../partials/validatable-input.ejs', { label: 'Banco emisor', name: 'issuer', options: [], dataCheckout: 'issuer', tab: 15 }) %>
+              </div>
+              <%- include('../partials/validatable-input.ejs', { label: 'Cuotas', name: 'installments', options: [], class: 'hidden' }) %>
+              
+              <input type="hidden" class="docTypeSlave" name="docType" value="CI" data-checkout="docType">
+              <input type="hidden" class="docNumberSlave" name="docNumber" data-checkout="docNumber"/>
+
+              <input type="hidden" class="cardNumberSlave" id="cardNumber" data-checkout="cardNumber">
+              <input type="hidden" name="transactionAmount" id="transactionAmount">
+              <input type="hidden" name="paymentMethodId" id="paymentMethodId" >
+              <input type="hidden" name="description" value="Orden Vivero" id="description">
+              <input type="hidden" id="card-exp-month" data-checkout="cardExpirationMonth">
+              <input type="hidden" id="card-exp-year" data-checkout="cardExpirationYear">
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <b class="accordion-header" id="headingTwo">
+          <label for="payment-method-abitab" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            <input type="radio" id="payment-method-abitab" name="paymentMethod" value="abitab"> Abitab
+          </label>
+        </b>
+        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#payment-methods">
+          <div class="accordion-body" id="abitabPaymentForm">
+            <img class="payment-network-logo" src="/statics/assets/abitab.svg">
+            <p>
+              Paga en el local de Abitab más cercano dentro de las próximas 72 horas (<a href="https://www.abitab.com.uy/innovaportal/v/11702/11/abitab/locales.html" target="_blank">encuentra el más cercano</a>).
+              Te mandaremos el ticket de pago a tu email.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <b class="accordion-header" id="headingThree">
+          <label for="payment-method-redpagos" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+            <input type="radio" id="payment-method-redpagos" name="paymentMethod" value="redpagos"> Redpagos
+          </label>
+        </b>
+        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#payment-methods">
+          <div class="accordion-body" id="redpagosPaymentForm">
+            <img class="payment-network-logo" src="/statics/assets/redpagos.svg">
+            <p>
+              Paga en el local de Redpagos más cercano dentro de las próximas 72 horas
+              (<a href="https://www.redpagos.com.uy/buscador-de-locales-18#/" target="_blank">encuentra el más cercano</a>).
+              Te mandaremos el ticket de pago a tu email.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="errorMessage first-col span-col-2 no-margin"></div>
+    <button type="button" id="checkout-button" class="primary first-2-col no-margin main-action first-column statefull" onclick="pay()" tabindex="16"> 
+      Comprar <span class="totalPrice"></span>
+    </button>
+    <img class="logo-mercadopago" src="/statics/assets/horizontal_logo.png" alt="MercadoPago">
+  </div>
+</section>
+
+<%# scripts %>
+<script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+<script>
+
+const locations = <%- JSON.stringify(neighbourhoodCodes) %>;
+
+const subtotal = <%= subtotal %>;
+const subtotalDiscounted = <%= typeof locals.subtotalDiscounted === 'number' ? subtotalDiscounted : 'undefined'  %>;
+let userLogged = '<%= locals.user?.email %>';
+let emailExists;
+let currentState = 'none'
+let freeOrder = false
+
+if (subtotalDiscounted || subtotalDiscounted === 0) {
+  const afterDiscount = subtotalDiscounted
+  $('.totalPrice').html(`<span id="total" class="discounted">$${subtotal}</span> $${afterDiscount}`)
+  $('button .totalPrice').html(`(<span id="total" class="discounted">$${subtotal}</span> $${afterDiscount})`)
+  if (afterDiscount === 0) {
+    $('.hide-free').hide()
+    $('.show-free').show()
+    freeOrder = true
+  } else {
+    $('.hide-free').show()
+    $('.show-free').hide()
+    freeOrder = false
+  }
+  $('#transactionAmount').val(afterDiscount)
+} else {
+  $('.totalPrice').text(`$${subtotal}`)
+  $('button .totalPrice').text(`($${subtotal})`)
+  $('#transactionAmount').val(subtotal)
+}
+
+$('#payment-methods input[type=radio]').change(event => { 
+  $('#payment-methods label.accordion-button').attr('data-bs-toggle', 'collapse')
+  $(event.target).parent().attr('data-bs-toggle', '')
+})
+
+function getCheckoutParams (token) {
+  return {
+    paymentMethod: $('input[name=paymentMethod]:checked').val(),
+    handingMethod: $('input[name=handing]:checked').val(),
+    token: token,
+    firstName: $('#firstName').val(),
+    lastName: $('#lastName').val(),
+    email: $('#email').val(),
+    phone: $('#phone').val(),
+    state: $('#state').val(), 
+    neighbourhood: $('#neighbourhood').val(), 
+    address: $('#address').val(),
+
+    docType: $('#docType').val(),
+    docNumber: $('#docNumber').val(),
+    transactionAmount: $('form#cardPaymentForm #transactionAmount').val(),
+    paymentMethodId: $('form#cardPaymentForm #paymentMethodId').val(),
+    description: $('form#cardPaymentForm #description').val(),
+    installments: $('form#cardPaymentForm #installments').val(),
+    issuer: $('form#cardPaymentForm #issuer').val() || '',
+    
+    _csrf: '<%= csrfToken %>'
+  }
+}
+
+function renderState (state) {
+  switch (state) {
+    case 'none':
+      $('.login').hide()
+      $('.register').hide()
+      break;
+    case 'login':
+      $('.login').show()
+      $('.register').hide()
+      break;
+    case 'register':
+      $('.login').hide()
+      $('.register').show()
+  }
+}
+
+const arriveDate = {
+  express: '<%= freeShippingDay %> <%= freeShippingDate %>',
+}
+
+function updateState (currentState, emailExists, lastNameEmpty) {
+  let newState;
+  if (emailExists) { 
+    newState = 'login'
+  } else {
+    console.log(lastNameEmpty)
+    if (!lastNameEmpty) {
+      newState = 'register'
+    } else {
+      newState = 'none'
+    }
+  }
+  return newState
+}
+
+$('input#email, input#lastName').keyup(function (event) {
+  if (!userLogged) {
+    const field = $(event.target)
+    if (field.prop('id') === 'email') {
+      // have to fetch the server
+      const email = field.val()
+
+      if (!userLogged && email) {
+        fetchApi(`/api/customers/exist?email=${email}`, {
+          method: 'GET',
+          success: function (data) {
+            emailExists = data.exist
+            currentState = updateState(currentState, emailExists, $('input#lastName').val().length === 0)
+            if (currentState === 'login') {
+              $('.login a').prop('href', `/cuenta/ingresar?email=${email}&redirect=/carrito/checkout`)
+            }
+            renderState(currentState)
+          }
+        })
+      }
+    } else {
+      if (emailExists === false) {
+        // the order hasnt been honored, dont activate it yet
+        currentState = updateState(currentState, emailExists, field.val().length === 0)
+        if (currentState === 'register') {
+          $('.register a').prop('href', `/cuenta/registrarse?email=${$('input#email').val()}&firstName=${$('input#firstName').val()}&lastName=${field.val()}&redirect=/carrito/checkout`)
+        }
+        renderState(currentState)
+      }
+    }
+  }
+})
+
+function reviewName (event) {
+  const firstName = $('input#firstName').val()
+  const lastName = $('input#lastName').val()
+  const reviewNameEl = $('#name-review')
+  if (firstName && lastName) {
+    const fullName = `${firstName} ${lastName}`
+    reviewNameEl.text(fullName)
+    reviewNameEl.removeClass('required')
+
+    const carHolderEl = $('input#cardholderName')
+    if (!carHolderEl.val()) {
+      carHolderEl.val(fullName)
+    }
+  } else {
+    reviewNameEl.addClass('required')
+    reviewNameEl.text('Requerido')
+  }
+}
+
+function reviewEmail (event) {
+  const email = $('input#email').val()
+  const reviewEmailEl = $('#email-review')
+  if (email) {
+    reviewEmailEl.removeClass('required')
+    reviewEmailEl.text(email)
+  } else {
+    reviewEmailEl.addClass('required')
+    reviewEmailEl.text('Requerido')
+  }
+}
+
+function reviewPhone (event) {
+  const phone = $('input#phone').val()
+  const reviewPhoneEl = $('#phone-review')
+  if (phone) {
+    reviewPhoneEl.removeClass('required')
+    reviewPhoneEl.text(phone)
+  } else {
+    reviewPhoneEl.addClass('required')
+    reviewPhoneEl.text('Requerido')
+  }
+}
+
+function reviewAddress (event) {
+  const address = $('input#address').val()
+  const neighbourhood = $('select#neighbourhood').val()
+  const reviewAddressEl = $('#address-review')
+  if (address && neighbourhood) {
+    reviewAddressEl.removeClass('required')
+    reviewAddressEl.text(`${address}, ${neighbourhood}`)
+  } else {
+    reviewAddressEl.addClass('required')
+    reviewAddressEl.text('Requerido')
+  }
+}
+
+$('input#firstName, input#lastName').keyup(reviewName)
+$('input#email').keyup(reviewEmail)
+$('input#phone').keyup(reviewPhone)
+$('input#address').keyup(reviewAddress)
+
+reviewName()
+reviewEmail()
+reviewPhone()
+reviewAddress()
+
+$("input#cardExp").blur(function(event) {
+  const cardexpiry = $(event.target).val()
+  const monthYear = cardexpiry.split('/')
+  const expMonth = parseInt(monthYear[0])
+  const expYear = parseInt(monthYear[1])
+  $("input#card-exp-month").val(expMonth)
+  $("input#card-exp-year").val(expYear)
+})
+
+function updateSlavesValues(masterId, slaveClass, removeWhiteSpaces) {
+  let value = $(`#${masterId}`).val()
+  if (removeWhiteSpaces) value = value.replaceAll(' ', '')
+  $(`.${slaveClass}`).val(value)
+}
+
+$('#docType').blur(function() {
+  updateSlavesValues('docType', 'docTypeSlave')
+})
+
+$('#docNumber').blur(function() {
+  updateSlavesValues('docNumber', 'docNumberSlave')
+})
+
+$('#cardNumberMaster').blur(function (event) {
+  const cardNumber = $(event.target).val().replaceAll(' ', '')
+  $('.cardNumberSlave').val(cardNumber)
+  guessPaymentMethod(cardNumber)
+})
+
+window.Mercadopago.setPublishableKey('<%= publicKey %>')
+window.Mercadopago.getIdentificationTypes()
+
+
+function guessPaymentMethod (cardNumber) {
+  if (cardNumber.length >= 6) {
+    const bin = cardNumber.substring(0, 6)
+    window.Mercadopago.getPaymentMethod({
+      bin: bin
+    }, setPaymentMethod)
+  }
+};
+
+function setPaymentMethod (status, response) {
+  if (status == 200) {
+    const paymentMethod = response[0]
+    const cardImage = {
+      visa: '/statics/assets/visa.svg',
+      master: '/statics/assets/master.svg',
+      lider: '/statics/assets/lider.svg',
+      diners: '/statics/assets/diners.svg',
+      oca: '/statics/assets/oca.svg',
+      creditel: '/statics/assets/creditel.svg',
+      generic: '/statics/assets/cc.svg'
+    }
+    $('img#card-type').prop('src', paymentMethod.id in cardImage? cardImage[paymentMethod.id] : cardImage['generic'])
+    $('#paymentMethodId').val(paymentMethod.id)
+    if(paymentMethod.additional_info_needed.includes("issuer_id")){
+        getIssuers(paymentMethod.id);
+    } else {
+        // document.getElementById('issuerInput').classList.add("hidden");
+        getInstallments(
+            paymentMethod.id,
+            document.getElementById('transactionAmount').value
+        );
+    }
+  } else {
+    console.error(`payment method info error: ${response}`)
+  }
+}
+
+function getIssuers (paymentMethodId) {
+  window.Mercadopago.getIssuers(
+    paymentMethodId,
+    setIssuers
+  )
+}
+
+function setIssuers (status, response) {
+  if (status == 200) {
+    const issuerSelect = document.getElementById('issuer')
+    response.forEach(issuer => {
+      const opt = document.createElement('option')
+      opt.text = issuer.name
+      opt.value = issuer.id
+      issuerSelect.appendChild(opt)
+    })
+
+    if(issuerSelect.options.length <= 1) {
+      $('.issuer-container').addClass('hidden');
+    } else {
+      $('.issuer-container').removeClass('hidden');
+    }
+
+    getInstallments(
+      document.getElementById('paymentMethodId').value,
+      document.getElementById('transactionAmount').value,
+      issuerSelect.value
+    )
+  } else {
+    console.error(`issuers method info error: ${response}`)
+  }
+}
+
+function getInstallments (paymentMethodId, transactionAmount, issuerId) {
+  window.Mercadopago.getInstallments({
+    payment_method_id: paymentMethodId,
+    amount: parseFloat(transactionAmount),
+    issuer_id: parseInt(issuerId)
+  }, setInstallments)
+}
+
+function setInstallments (status, response) {
+  if (status == 200) {
+    document.getElementById('installments').options.length = 0
+    response[0].payer_costs.forEach(payerCost => {
+      const opt = document.createElement('option')
+      opt.text = payerCost.recommended_message
+      opt.value = payerCost.installments
+      document.getElementById('installments').appendChild(opt)
+    })
+  } else {
+    console.error(`installments method info error: ${response}`)
+  }
+}
+
+let beforeLoading;
+
+function pay(event) {
+  const paymentMethod = $('input[name=paymentMethod]:checked').val()
+
+  const params = getCheckoutParams()
+  
+  let fieldErrors = []
+
+  // Contact info
+  if (!params.email && !validateEmail(params.email)) {
+    fieldErrors.push({name: 'email', message: 'Ingresa un email válido'})
+  }
+  if (!params.firstName) {
+    fieldErrors.push({name: 'firstName', message: 'Ingresa tu nombre'})
+  }
+  if (!params.lastName) {
+    fieldErrors.push({name: 'lastName', message: 'Ingresa tu apellido'})
+  }
+  if (!params.phone) {
+    fieldErrors.push({name: 'phone', message: 'Ingresa tu número de celular o fijo'})
+  } else {
+    if (params.phone.replace(/[^0-9]/g, '').length < 8) {
+      fieldErrors.push({name: 'phone', message: 'Ingresa un número válido'})
+    }
+  }
+
+  // Shippment
+  if (!params.address) {
+    fieldErrors.push({name: 'address', message: 'Ingresa la dirección de envío'})
+  }
+
+  // Payment
+  if (!freeOrder) {
+    if (!params.docNumber) {
+      fieldErrors.push({name: 'docNumber', message: 'Ingresa el número de documento del titular de la tarjeta'})
+    }
+  
+    if (!$('input[name=cardholderName]').val()) {
+      fieldErrors.push({name: 'cardholderName', message: 'Ingresa el nombre del titular de la tarjeta'})
+    }
+  
+    if (paymentMethod === 'card') {
+      if (!$('input[name=cardNumberMaster]').val()) {
+        fieldErrors.push({name: 'cardNumberMaster', message: 'Ingresa el número de la tarjeta'})
+      }
+    
+      if (!$('input[name=cardExp]').val()) {
+        fieldErrors.push({name: 'cardExp', message: 'Ingresa la fecha de vencimiento de la tarjeta'})
+      }
+    
+      if (!$('input[name=cvc]').val()) {
+        fieldErrors.push({name: 'cvc', message: 'Ingresa el código de seguridad de la tarjeta'})
+      }
+    }
+  }
+
+  if (fieldErrors.length > 0) {
+    $('.errorMessage').html(`Encontramos ${fieldErrors.length} error${fieldErrors.length > 1? 'es' : ''}.<br>Encontrás arriba los campos marcados en rojo.`)
+    showFieldErrors(fieldErrors)
+  } else {
+    if (!freeOrder && !paymentMethod) {
+      return $('.errorMessage').html(`Debes elegír una forma de pago.`)
+    }
+    setButtonState({ loading: 'Un momento...' })
+    if (paymentMethod === 'card') {
+      getCardToken()
+    } else {
+      // payment network
+      setCardTokenAndPay(200, {})
+    }
+  }
+}
+
+function getCardToken () {
+  let cardForm = document.getElementById('cardPaymentForm');
+  window.Mercadopago.createToken(cardForm, setCardTokenAndPay);
+}
+
+function setCardTokenAndPay (status, response) {
+  if (status == 200 || status == 201) {
+
+    const checkoutParams = getCheckoutParams(response.id)
+    checkoutParams.freeOrder = freeOrder
+
+    fetchApi('/api/cart/checkout-mercadopago', {
+      params: checkoutParams,
+      success: function (data) {
+        setButtonState({ 
+          success: 'Pago exitoso', 
+          callback: function() {
+            window.location.href = `/ordenes/${ data.order.id }?mensaje=exito`
+          }
+        })
+      },
+      error: function (data) {
+        setButtonState({ default: true })
+        if (data.message) {
+          $('.errorMessage').text(data.message) //`Ups! Hubo un error procesando tu orden. Puedes intentar de nuevo o comunicarte a nuestro WhatsApp.`)
+        } else {
+          const fieldErrors = data.fields
+          if (fieldErrors.length > 0) {
+            $('.errorMessage').html(`Encontramos ${fieldErrors.length} error${fieldErrors.length > 1? 'es' : ''}.<br>Buscá arriba los campos marcados en rojo.`)
+            showFieldErrors(fieldErrors)
+          }
+        }
+      },
+      internalError: function (error) {
+        $('.errorMessage').text(`Ups! Hubo un error procesando tu orden. Puedes intentar de nuevo o comunicarte a nuestro WhatsApp.`)
+        setButtonState({ default: true })
+        console.error(error)
+      }
+    })
+  } else {
+    const causeMessages = {
+      205: 'Ingresa el número de tu tarjeta.',
+      208: 'Ingresa el mes de vencimiento de la tarjeta.',
+      209: 'Ingresa el año de vencimiento de la tarjeta.',
+      212: 'Ingresa tu tipo de documento.',
+      213: 'Ingresa tu documento.',
+      214: 'Ingresa tu documento.',
+      220: 'Ingresa tu banco.',
+      221: 'Ingresa el nombre y apellido.',
+      224: 'Ingresa el código de seguridad.',
+      E301: 'Ingresa un número de tarjeta válido.',
+      E302: 'Revisa el código de seguridad.',
+      316: 'Ingresa un nombre válido.',
+      322: 'El tipo de documento es inválido.',
+      323: 'Revisa tu documento.',
+      324: 'El documento es inválido.',
+      325: 'El mes de vencimiento de tu tarjeta es inválido.',
+      326: 'El año de vencimiento de tu tarjeta es inválido.',
+      default: 'Revisa los datos.'
+    }
+
+    $('.errorMessage').html(`Detectamos los siguientes errores: <ul>${response.cause.map(cause => '<li>' + causeMessages[cause.code] + '</li>').join('')}</ul>`)
+    console.error(response)
+    setButtonState({ default: true })
+  }
+}
+
+
+$('.validatable-input input').keydown(event => {
+  $(event.target).parent().parent().removeClass('error')
+})
+
+</script>
+
+<%- include('../partials/store-tail.ejs') %>

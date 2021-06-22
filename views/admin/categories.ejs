@@ -1,0 +1,48 @@
+<%- include('./partials/admin-head.ejs') %>
+<%- include('./partials/breadcrumb.ejs', { pages: [{ label: 'Categorías' } ] }) %>
+
+<style>
+  i.published {
+    color: blue;
+    margin-right: 8px;
+  }
+
+  i.not.published {
+    color: lightgray;
+  }
+
+</style>
+<div id="vue-categories" v-cloak>
+  <h1>Categorías</h1>
+  <vue-table :cols="cols" resource-name="categories"></vue-table>
+  <a href="/admin/categories/new"><button class="primary">Nueva categoría</button></a>
+</div>
+
+<script type="module">
+  import vueTable from '/statics/scripts/tiendu-dynamic-table.vue.js'
+  axios.defaults.baseURL = `${window.location.protocol}//${window.location.host}/api/`
+  
+  new Vue({
+    el: '#vue-categories',
+    data() {
+      return {
+        cols: [
+          { 
+            label: 'Título', 
+            val: 'title',
+            span: 2,
+            html: true,
+            format: (title, category) => (category.listed? '<i class="bi bi-circle-fill published"></i>' : '<i class="bi bi-circle-fill not published"></i>') + title.replace( /(<([^>]+)>)/ig, '') 
+          },
+          { label: '# Productos', val: 'products', format: products => products.length }
+        ] 
+      }
+    },
+    components: {
+      'vue-table': vueTable
+    }
+  })
+
+</script>
+
+<%- include('./partials/admin-tail.ejs') %>

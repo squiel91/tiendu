@@ -1,0 +1,199 @@
+<%- include('./partials/admin-head.ejs') %>
+<%- include('./partials/breadcrumb.ejs', { pages: [{ label: 'Páginas', link: '/admin/pages' }, { label: 'Edición' } ] }) %>
+
+<style>
+  .page-editor-grid {
+    display: grid;
+    grid-gap: 32px;
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .first-col {
+    grid-column-start: 1;
+  }
+  
+  .span-2-col {
+    grid-column-end: span 2;
+  }
+
+  @media screen and (max-width: 992px) {
+    .page-editor-grid {
+      grid-template-columns: 1fr;
+      grid-gap: 16px;
+    }
+
+    .first-col {
+      grid-column-start: unset;
+    }
+    
+    .span-2-col {
+      grid-column-end: unset;
+    }
+  }
+</style>
+
+<div id="vue-page-editor" v-cloak>
+  <div style="display: flex;">
+    <h1 style="flex-grow: 1; margin-bottom: 40px;">Página</h1>
+    <div>
+      <tiendu-secondary-button :disabled="!pageId" :link="`/paginas/${originalHandle}`" style="margin-right: 8px;">
+        <div>
+          <span class="hide-mobile">
+            Visualizar
+          </span>
+          <i class="show-mobile bi bi-box-arrow-up-right"></i>
+        </div>
+      </tiendu-secondary-button>
+      <tiendu-secondary-button :disabled="!pageId" @click="remove()">
+        <div>
+          <span class="hide-mobile">
+            Borrar
+          </span>
+          <i class="show-mobile bi bi-trash-fill"></i>
+        </div>
+      </tiendu-secondary-button>
+    </div>
+  </div>
+  <div class="page-editor-grid">
+    <tiendu-input error="true" label="Título" id="title" v-model="title" :error="titleError" help="El título principal, que se muestra arriba de la página."></tiendu-input> 
+    <tiendu-input :label="handleRoute" @input="handleChanged()" v-model="handle" :error="handleError" help="Es como se verá la dirección de la página en la barra superior del navegador. Debe ser único para cada página (no se puede repetir)."></tiendu-input>
+    <div class="first-col span-2-col">
+      <tiendu-textarea ref="textarea" @input="content = $event"></tiendu-textarea>
+    </div>
+    <div class="first-col span-2-col" style="display: flex;">
+      <input type="checkbox" id="published" v-model="published" style="margin-right: 8px"><label for="published">Publicada</label>
+    </div>
+    <div v-if="errorMessage" class="error-message first-col span-2-col">
+      <i class="bi bi-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+    <div class="first-col span-2-col">
+      <tiendu-button normal-text="Guardar página" @click="send()"></tiendu-button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import tienduButton from '/statics/scripts/tiendu-button.vue.js'
+  import tienduTextarea from '/statics/scripts/tiendu-textarea.vue.js'
+  import tienduSecondaryButton from '/statics/scripts/tiendu-secondary-button.vue.js'
+  import tienduInput from '/statics/scripts/tiendu-input.vue.js'
+
+  axios.defaults.baseURL = `${window.location.protocol}//${window.location.host}/api/`
+  const pageId = (window.location.pathname.split('/')).pop()
+
+  new Vue({
+    el: '#vue-page-editor',
+    data() {
+      return {
+        pageId: undefined,
+        errorMessage: '',
+        title: '',
+        titleError: '',
+        handle: '',
+        originalHandle: '',
+        handleError: '',
+        content: '',
+        handleModified: false,
+        published: true,
+        loading: false
+      }
+    },
+    components: {
+      tienduButton,
+      tienduTextarea,
+      tienduSecondaryButton,
+      tienduInput
+    },
+    computed: {
+      handleRoute() {
+        return window.location.host + '/paginas/'
+      }
+    },
+    watch: {
+      title() {
+        this.autocompleteHandle()
+      }
+    },
+    methods: {
+      handleChanged() {
+        this.handleModified = this.handle.length > 0
+      },
+      autocompleteHandle() {
+        if (this.title) {
+          if (!this.handleModified) {
+            this.handle = this.title
+              .normalize("NFD")
+              .replace('ñ', 'n')
+              .replace(/[^\w\s]/g, "")
+              .replaceAll(' ', '-')
+              .toLowerCase()
+          }
+        }
+      },
+      async send () {
+        this.handleError = ''
+        this.titleError = ''
+        this.errorMessage = ''
+
+        try {
+          const response = await (this.pageId? axios.patch : axios.post)(this.pageId? `pages/${this.pageId}` : 'pages', {
+            title: this.title,
+            handle: this.handle,
+            content: this.content,
+            published: this.published,
+          })
+          
+          window.location.href = '/admin/pages'
+        } catch (error) {
+          if (error.response?.data?.fields) {
+            this.errorMessage = 'Se detectó algun error. Quedaron marcados arriba en rojo.' 
+            const errorFields = error.response.data.fields
+            for (const errorField of errorFields) {
+              if ((errorField.name + 'Error') in this)
+              this[errorField.name + 'Error'] = errorField.message
+            }
+          } else {
+            this.errorMessage = error.response?.data?.message || 'Ocurrió un error en el servidor' 
+          }
+        }
+      },
+      async remove () {
+        try {
+          const response = await axios.delete(`pages/${this.pageId}`)
+          window.location.href = '/admin/pages'
+        } catch (error) {
+          alert('Ocurrió un error')  
+          console.error(error)
+        }
+      }
+    },
+    async created () {
+      try {
+        const pageId = (window.location.pathname.split('/')).pop()
+
+        if (pageId !== 'create') {
+          this.pageId = pageId
+          const response = await axios.get(`pages/${pageId}`)
+          
+          if (response.status === 200 && response.data.success) {
+            const page = response.data.page
+            this.title = page.title
+            this.handle = page.handle
+            this.originalHandle = page.handle
+            this.handleModified = page.handle.length > 0
+            this.content = page.content
+            this.$refs.textarea.setUp(this.content)
+            this.published = page.published
+          } else {
+            this.error = true
+          }
+        }
+      } catch (error) {
+        this.error = true
+        console.error(error)
+      }
+    }
+  })
+</script>
+
+<%- include('./partials/admin-tail.ejs') %>

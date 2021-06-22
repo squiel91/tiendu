@@ -1,0 +1,91 @@
+<%- include('../partials/store-head.ejs') %>
+<%- include('../partials/breadcrumb.ejs', { pages: [{ label: category.title }] }) %>
+
+<style>
+  .category-banner {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 250px;
+  }
+  .categoryTitle {
+    text-transform: capitalize;
+    margin: 0;
+    margin-bottom: 12px;
+  }
+  .store__category__description {
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+
+  .categoryInfo {
+    margin-bottom: 50px;
+    margin-top: 50px;
+  }
+
+  .order-col {
+    display: flex;
+    align-items: center;
+  }
+
+  .order-col .validatable-input.orden{
+    min-width: 100%;
+    margin-bottom: 0;
+  }
+
+  @media screen and (max-width: 992px) {
+    .categoryInfo {
+      margin-bottom: 30px;
+      margin-top: 30px;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .categoryInfo {
+      margin-top: 30px;
+      margin-bottom: 10px;
+    }
+
+    .store__category__description {
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+
+    .order-col {
+      margin-top: 16px;
+      margin-bottom: 16px;
+    } 
+  }
+</style>
+
+</div>
+<% if (locals.category?.image) { %>
+  <div class="category-banner" style="background-image: url('<%= category.image.coverSrc %>');"></div>
+<% } %>
+<div class="container">
+  <div class="row categoryInfo">
+    <div class="col-md-8">
+      <h1 class="categoryTitle"><%= category.title %></h1>
+      <% if (hasDescription) { %>
+        <div class="store__category__description"><%- category.description %></div>
+      <% } %> 
+    </div>
+    <div class="col-md-4 order-col">
+      <%- include('../partials/validatable-input.ejs', { label: 'Orden', value: order, options: [
+        { value: 'recomendado', text: 'Recomendado' },
+        { value: 'precio', text: 'Precio (económico primero)' },
+        { value: 'nombre', text: 'Nombre' }
+      ] }) %>
+    </div>
+  </div>
+  <%- include('./snippets/list-products.ejs', { products: category.products, empty: 'No hay productos en esta categoría aún.', from: category.handle }) %>
+</div>
+
+<script>
+  $('select#orden').change(function (event) {
+    const newOrder = $(event.target).val()
+    location.href = `${location.protocol}//${location.host}${location.pathname}?orden=${newOrder}`
+  })
+</script>
+
+<%- include('../partials/store-tail.ejs') %>

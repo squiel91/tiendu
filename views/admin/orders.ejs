@@ -1,0 +1,33 @@
+<%- include('./partials/admin-head.ejs') %>
+<%- include('./partials/breadcrumb.ejs', { pages: [{ label: 'Órdenes' } ] }) %>
+
+<div id="vue-orders" v-cloak>
+  <h1>Ordenes</h1>
+  <vue-table :cols="cols" resource-name="orders"></vue-table>
+</div>
+
+<script type="module">
+  import vueTable from '/statics/scripts/tiendu-dynamic-table.vue.js'
+  axios.defaults.baseURL = `${window.location.protocol}//${window.location.host}/api/`
+
+  new Vue({
+    el: '#vue-orders',
+    data() {
+      return {
+        cols: [
+          { label: '#', val: 'number' },
+          { label: 'Cliente', val: 'personal.fullName', span: 3},
+          { label: 'Email', hideMobile: true, val: 'personal.email', span: 3 },
+          { label: 'Facturado', format: value => '$' + value, val: 'billed', span: 2 },
+          { label: 'Fecha', hideMobile: true, val: 'created', span: 2 },
+          { label: 'Estado', val: 'status', span: 2, html: true, format: status => `<span class="status-chip ${status.replace(' ', '-')}">${status}</span>` }
+        ]
+      }
+    },
+    components: {
+      'vue-table': vueTable
+    }
+  })
+</script>
+
+<%- include('./partials/admin-tail.ejs') %>

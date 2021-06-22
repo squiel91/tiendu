@@ -1,0 +1,22 @@
+<a href="/productos/<%= product.handle %><%= locals.from? `?from=${from}` : '' %>">
+  <div class="store__product-item-container">
+    <div class="store__product-item">
+        <div class="store__product-item__image-container" style="background-image: url('<%= product.images.length > 0? product.images[0].thumbSrc : '/statics/assets/no-image.png' %>');">
+          <% if (product.images?.length > 1) { %>
+            <div class="store__product-item__image" style="background-image: url('<%= product.images[1].thumbSrc %>');"></div>
+          <% } %>
+        </div>
+      <% if (!product.inStock()) { %>
+        <div class="out-of-stock" style="color: initial;">Agotado</div>
+      <% } %>
+    </div>
+    <div class="store__product-item__title"><%= product.title %></div>
+    <div><%- include('../../partials/stars.ejs', { value: product.averageReview(), small: true }) %></div>
+    <div class="store__product-item__price">
+      <%= `$${product.price}` %>
+      <% if (product.compareAt) { %>
+        <span class="compare-at">&nbsp;$<%= product.compareAt %>&nbsp;</span>
+      <% } %>
+    </div>
+  </div>
+</a>

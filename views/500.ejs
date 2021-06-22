@@ -1,0 +1,8 @@
+<%- include('partials/store-head.ejs') %>
+<%- include('./partials/breadcrumb.ejs', { pages: [{ label: 'Error interno' }] }) %> 
+<h1>¡Que bochorno! Te perdimos discupa.</h1>
+<p>Ocurrió un error en nuestra plataforma. Podés volver a intentar, tal vez tienes suerte.</p>
+<p>Este es el error por si te interesa:</p>
+<%- error %>
+
+<%- include('partials/store-tail.ejs') %>

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= PREFERENCES.storeName + (locals.title ? ', ' + title : '' )%></title>
+    <meta property="og:title" content="<%= PREFERENCES.storeName + (locals.title ? ', ' + title : '' )%>">
+    <% const metaDescription = locals.product?.cleanDescription() || locals.category?.cleanDescription() || 'El vivero que visitas desde tu casa' %>
+    <meta name="description" content="<%= metaDescription %>">
+    <meta property="og:description" content="<%= metaDescription %>">
+    <meta property="og:url" content="<%= locals.url %>">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <% if (locals.product || locals.category) { %>
+      <% if (locals.product && product.images?.length > 0) { %>
+        <meta property="og:image" content="<%= locals.domain %><%= product.images[0].srcThumb %>">
+      <% } %>
+      <% if (locals.category && category.image) { %>
+        <meta property="og:image" content="<%= locals.domain %><%=category.image.srcThumb %>">
+      <% } %>
+    <% } else { %>
+      <meta property="og:image" content="<%= locals.domain %>/statics/assets/share-social.png">
+    <% } %>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link href="/statics/styles/styles.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@200;300;400;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tippy -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/statics/assets/favicon.png">
+    <link rel="manifest" href="/statics/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <style>
+
+      body {
+        --mobile: 700px;
+      }
+
+      a.logo-title-link {
+        color: inherit; /* blue colors for links too */
+        text-decoration: inherit;
+        color: black;
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      
+      .logo {
+        width: 180px;
+      }
+    
+      .topMenu {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        margin-top: 10px;
+      }
+
+      .topMenu .menuItem {
+        padding: 8px 0px 8px 0px;
+        margin-left: 20px;
+        flex-shrink: 0;
+      }
+
+      .desktop-menu {
+        display: flex; 
+        flex-grow: 1;
+        align-items: flex-start;
+      }
+
+      nav {
+        position: relative;
+      }
+
+      .menuItem a[href="/carrito"] {
+        display: flex;
+        align-items: center
+      }
+
+      .miniCart, .menuIcon {
+        width: 26px;
+        margin-right: 2px;
+      }
+      
+      .cart-quantity {
+        background-color: #5f9061;
+        color: white;
+        border-radius: 50%;
+        min-width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: normal;
+      }
+
+      .responsiveSearchBar {
+        flex-grow: 1;
+        margin: 0 20px 0 20px;
+        display: none;
+      }
+
+      .separator {
+        flex-grow: 1;
+        height: 10px;
+      }
+
+      .collapsableMenu {
+        display: none;
+        position: absolute;
+        margin-top: 0px;
+        padding: 16px 0 24px 0;
+        border-radius: 8px;
+        box-shadow: 0 0.9px 2.2px rgba(0,0,0,.02), 0 2.2px 5.3px rgba(0,0,0,.028), 0 4.1px 10px rgba(0,0,0,.035), 0 7.4px 17.9px rgba(0,0,0,.042), 0 13.8px 33.4px rgba(0,0,0,.05), 0 33px 80px rgba(0,0,0,.07);
+        opacity: 0;
+        transition: all 0.2s;
+        z-index: 999;
+        min-width: 200px;
+        background-color: white;
+      }
+
+      .collapsableMenu.relative {
+        position: relative !important;
+      }
+
+      .collapsableMenu.left {
+        right: 0;
+      }
+
+      .collapsableMenu .menuItem {
+        display: block;
+        margin-left: 0;
+        padding: 10px 30px;
+        background-color: white;
+        transition: background-color .5s;
+      }
+
+      .collapsableMenu .titleSeparator {
+        padding: 25px 30px 5px 30px;
+        font-size: small;
+        color: gray;
+      }
+
+      .menuOverlay {
+        display: none;
+        position: fixed;
+        background-color: rgba(0, 0, 0, 0.115);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 998;
+        /* transition: opacity 0.2s; */
+      }
+
+      .message-bar {
+        background-color: #7bb17b;
+        color: white;
+        font-weight: bold;
+        padding: 16px;
+        text-align: center;
+      }
+
+      @media screen and (max-width: 1200px) {
+        .hideOnLarge {
+          display: none;
+        }  
+      }
+
+      @media screen and (max-width: 992px) {
+        .topMenu {
+          flex-wrap: wrap;
+        }
+        
+        .responsiveSearchBar {
+          margin: 8px 0 0 0;
+          order: 1;
+          flex-basis: 100%;
+        }
+
+        .separator {
+          display: block;
+        }
+
+        .logo {
+          width: 140px;
+        }
+
+        /* Category list */
+        .positionRelative {
+          position: relative;
+        }
+
+        .collapsableMenu {
+          width: 100%;
+        }
+      }
+
+      .featuredCategories {
+        display: flex;
+        overflow: visible;
+      }
+
+      .featuredCategory {
+        flex-shrink: 0;
+        margin: 16px 0px;
+      }
+
+      .featuredCategory button {
+        border-radius: 50px;
+        border: none;
+        border-radius: 50px;
+        padding: 8px 20px;
+        color: white;
+        background-color: cornflowerblue;
+        margin-right: 8px;
+        transition: opacity 0.3s;
+      }
+
+      .featuredCategory button:hover {
+        opacity: 0.8;
+      }
+    </style>
+    <script src="/statics/scripts/utils.js" async></script>
+
+    <% if (locals.shouldUseAnalytics) { %>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-LC9FF8G3VW"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'G-LC9FF8G3VW');
+      </script>
+      <script>
+        (function(h,o,t,j,a,r){
+            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+            h._hjSettings={hjid:2321078,hjsv:6};
+            a=o.getElementsByTagName('head')[0];
+            r=o.createElement('script');r.async=1;
+            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+      </script>
+    <% } %>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VXQLK75GJ7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VXQLK75GJ7');
+    </script>
+
+  </head>
+  <body>
+    <% if (locals.user && user.admin) { %>
+      <a class="adminBar" href='/admin'>
+        <svg style="margin-right: 8px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
+          <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+        </svg>
+        Administrar la tienda
+      </a>
+    <% } %>
+    <% if (PREFERENCES.globalMessage ) { %>
+      <div class="message-bar">
+        <%= PREFERENCES.globalMessage %>
+      </div>
+    <% } %>
+    <div class="header">
+      <div class="container">
+        <nav>
+          <div class="topMenu">
+            <a class="logo-title-link" href="/">
+            <img class="logo" src="/statics/assets/logo.svg">
+            </a>
+            <div class="separator"></div>
+            <div class="secondlyInput responsiveSearchBar">
+              <label for="searchBar">Buscar</label>
+              <input type="text" id="searchBar" class="dontDisable" value="<%= locals.query? query : '' %>">
+            </div> 
+            <% if (PREFERENCES.headerMenu && PREFERENCES.headerMenu.length > 0) {
+              PREFERENCES.headerMenu.forEach(menuItem => { %>
+                <a class="menuItem hideOnLarge <%= menuItem.classes %>" href="<%= menuItem.link %>"><%= menuItem.text %></a>
+              <% })
+            } %>
+            <% if (locals.user) { %>
+              <div class="menuItem hideOnLarge">
+                <a href="/cuenta">Mi cuenta</a>
+              </div>
+            <% } else { %>
+              <div class="menuItem hideOnLarge"><a href="/cuenta/ingresar">Ingresa</a> / <a href="/cuenta/registrarse">Registrate</a></div>
+            <% } %>
+            <div class="menuItem hideOnLarge positionRelative">
+              <div class="toggleMenu pseudo-a">
+                Menú
+                <svg style="width: 16px; margin-top: -2px; margin-left: 2px;" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 66.33 41.46">
+                  <defs>
+                    <style>
+                      .chevronLine {fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:10px;}
+                    </style>
+                  </defs>
+                  <polyline class="chevronLine" points="57.29 10.18 33.85 32.23 10.4 10.18"/></svg>
+              </div>
+              <div class="collapsableMenu left">
+                <% if (locals.listedCategories?.length > 0) {  %>
+                  <div class="titleSeparator" style="padding-top: 12px;">Todas las categorías</div>
+                  <% listedCategories.forEach(listedCategory => { %>
+                    <div class="menuItem" style="padding-top: 6px; padding-bottom: 6px;"><a class="featuredCategory" href="/categorias/<%= listedCategory.handle %>"><button><%= listedCategory.title %></button></a></div>
+                  <% }) %>
+                <% } %>
+                <% if (PREFERENCES.footerMenu && PREFERENCES.footerMenu.length > 0) { %>
+                  <div class="titleSeparator">Más información</div>
+                  <% PREFERENCES.footerMenu.forEach(menuItem => { %>
+                    <a class="menuItem <%= menuItem.classes %>" href="<%= menuItem.link %>"><%= menuItem.text %></a>
+                  <% }) %>
+                <% } %>
+              </div>
+              <div class="menuOverlay"></div>
+            </div>
+            <div class="menuItem cart">
+              <a href="/carrito">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" stroke="currentColor" class="miniCart" viewBox="0 0 100 100">
+                  <style>                  
+                    .cart-line{
+                      fill:none;
+                      stroke-width:8;
+                      stroke-linecap:round;
+                      stroke-linejoin:round;
+                    }
+                  </style>
+                  <polyline class="cart-line" points="5.7,10.7 22.7,10.7 34.5,60.2 84.2,60.2 95.2,21.7 43.2,21.7 "/>
+                  <circle cx="36.2" cy="83.6" r="9"/>
+                  <circle cx="88.3" cy="83.6" r="9"/>
+                </svg>
+                <% if (locals.cartItemQty > 0) { %>
+                  <span class="cart-quantity"><%= cartItemQty %></span>
+                <% } %>
+              </a>
+            </div>
+            <div class="menuItem d-md-block d-xl-none">
+              <div class="toggleMenu pseudo-a">
+                <svg xmlns="http://www.w3.org/2000/svg" stroke="currentColor" class="menuIcon" viewBox="0 0 100 100">
+                  <style type="text/css">
+                    .menuLines{
+                      fill:none;
+                      stroke-width:8;
+                      stroke-linecap:round;
+                      stroke-linejoin:round;
+                    }
+                  </style>
+                  <line class="menuLines" x1="90.1" y1="21.3" x2="33.8" y2="21.3"/>
+                  <line class="menuLines" x1="90.1" y1="48.6" x2="15.3" y2="48.6"/>
+                  <line class="menuLines" x1="90.1" y1="75.9" x2="44.8" y2="75.9"/>
+                </svg>
+              </div>
+              <div class="collapsableMenu left">
+                <% if (PREFERENCES.headerMenu && PREFERENCES.headerMenu.length > 0) {
+                  PREFERENCES.headerMenu.forEach(menuItem => { %>
+                    <a class="menuItem <%= menuItem.classes %>" href="<%= menuItem.link %>"><%= menuItem.text %></a>
+                  <% })
+                } %>
+                <% if (locals.user) { %>
+                  <a class="menuItem" href="/cuenta">Mi cuenta</a>
+                <% } else { %>
+                  <div class="menuItem"> <a href="/cuenta/ingresar">Ingresa</a> / <a href="/cuenta/registrarse">Registrate</a></div>
+                <% } %>
+                <% if (locals.listedCategories?.length > 0) {  %>
+                  <div class="titleSeparator">Todas las categorías</div>
+                  <% listedCategories.forEach(listedCategory => { %>
+                    <div class="menuItem" style="padding-top: 6px; padding-bottom: 6px;"><a class="featuredCategory" href="/categorias/<%= listedCategory.handle %>"><button><%= listedCategory.title %></button></a></div>
+                  <% }) %>
+                <% } %>
+                <% if (PREFERENCES.footerMenu && PREFERENCES.footerMenu.length > 0) { %>
+                  <div class="titleSeparator">Más información</div>
+                  <% PREFERENCES.footerMenu.forEach(menuItem => { %>
+                    <a class="menuItem <%= menuItem.classes %>" href="<%= menuItem.link %>"><%= menuItem.text %></a>
+                  <% }) %>
+                <% } %>
+              </div>
+              <div class="menuOverlay"></div>
+            </div>
+          </div>
+          <script>
+
+            let timeout = null
+
+            $('#searchBar').on('keypress', event => {
+              const query = $(event.target).val() 
+              if(event.which == 13 && query) {
+                window.location.href = `/busqueda?q=${query}` 
+              }
+            })
+
+            function openMenu(collapsable) {
+              const menuOverlay = collapsable.next()
+              menuOverlay.fadeIn(200)
+              const reduceMargin = collapsable.hasClass('reduceMargin')
+              collapsable.show()
+              timeout = setTimeout(function() {
+                collapsable.css("opacity", '1');
+                collapsable.css("margin-top", reduceMargin? '-10px' : '20px');
+              }, 0)
+            }
+
+            function closeMenu(collapsable) {
+              const menuOverlay = collapsable.next()
+              menuOverlay.fadeOut(200)
+              collapsable.css("opacity", '0');
+              collapsable.css("margin-top", '0px');
+              timeout = setTimeout(function() {
+                collapsable.hide()
+              }, 200)
+            }
+
+            $(evt => {
+              $('.toggleMenu').click(event => {
+                clearTimeout(timeout)
+                let collapsable
+                if ($(event.target).hasClass('toggleMenu'))
+                  collapsable = $(event.target).next()
+                else
+                  collapsable = $(event.target).parent().next()
+                if (!collapsable.hasClass('open')) {
+                  openMenu(collapsable)
+
+                  collapsable.next().click((event) => {
+                    closeMenu($(event.target).prev())
+                  })
+                } else {
+                  closeMenu(collapsable)
+                }
+              })
+            })
+          </script>
+        </nav>
+      </div>
+    </div>
+    <div class="container">

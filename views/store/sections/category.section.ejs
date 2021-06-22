@@ -1,0 +1,7 @@
+<section style="margin: 40px 0;" class="store__category">
+  <div style="display: flex; align-items: baseline; margin-bottom: 30px;">
+    <h2 style="margin: 0 16px 0 0;"><%= locals.altTitle || category.title %></h2>
+    <div><a style="color: #5f9061;" href="/categorias/<%= category.handle %>">Ver más</a></div>
+  </div>
+  <%- include('../snippets/list-products.ejs', { products: category.products, empty: "No hay productos en esta categoría aún.", from: category.handle }) %>
+</section>

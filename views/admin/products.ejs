@@ -1,0 +1,58 @@
+<%- include('./partials/admin-head.ejs') %>
+<%- include('./partials/breadcrumb.ejs', { pages: [{ label: 'Productos' } ] }) %>
+
+<div id="vue-products">
+  <h1>Productos</h1>
+  <vue-table :cols="cols" resource-name="products"></vue-table>
+  <a href="/admin/products/new"><button class="primary">Nuevo producto</button></a>
+</div>
+
+<script type="module">
+  import vueTable from '/statics/scripts/tiendu-dynamic-table.vue.js'
+  axios.defaults.baseURL = `${window.location.protocol}//${window.location.host}/api/`
+
+  new Vue({
+    el: '#vue-products',
+    data() {
+      return {
+        cols: [
+          { 
+            label: 'Título', 
+            val: 'title',
+            span: 2,
+            html: true,
+            format: (title, product) => (product.published? '<i class="bi bi-circle-fill published"></i>' : '<i class="bi bi-circle-fill not published"></i>') + title.replace( /(<([^>]+)>)/ig, '') },
+          { label: 'Stock', html: true, val: 'stock', format: stock => typeof stock === 'undefined'? '∞' : stock },
+          { label: 'Precio', format: price => '$' + price, val: 'price' },
+        ] 
+      }
+    },
+    components: {
+      'vue-table': vueTable
+    }
+  })
+
+</script>
+
+
+<script>
+  function remove (productId) {
+    if (confirm('Are you sure you want to delete it?')) {
+      fetchApi(`/api/products/${productId}`, {
+        method: 'DELETE',
+        params: { 
+          _csrf: '<%= csrfToken %>'
+        },
+        success: function (data) {
+          location.reload()
+        },
+        executeOnError: function(error) {
+          alert('There was an error! Check the error on the console.')
+          console.error(error)
+        }
+      })
+    }
+  }
+</script>
+
+<%- include('./partials/admin-tail.ejs') %>

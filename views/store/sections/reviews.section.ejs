@@ -1,0 +1,47 @@
+<section style="padding: 40px 0;">
+  <style>
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 40px 32px;
+    }
+
+    .title-outer {
+      display: none;
+    }
+
+    @media screen and (max-width: 992px) {
+      .review-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 40px 16px;
+      }
+
+      .title-inner {
+        display: none;
+      }
+
+      .title-outer {
+        display: block;
+      }
+    }
+  </style>
+  <h1 class="title-outer">Lo que dicen de nuestras plantas</h1>
+  <div class="review-grid">
+    <div class="title-inner">
+      <h2 style="margin: 0; line-height: 1.5em;">Lo que dicen de nuestras plantas</h2>
+    </div>
+    <% if (locals.reviews && reviews.length > 0) { %>
+      <% reviews.forEach(review => { %>
+        <div class="review-item">
+          <div class="review-item__stars"><%- include('../../partials/stars.ejs', { value: review.value }) %></div>
+          <div class="review-item__product" style="margin-top: 8px;"><a href="/productos/<%= review.prodHandle %>"><%= review.prodTitle %></a></div>
+          <div class="review-item__comment" style="margin-top: 4px; margin-bottom: 24px;"><%= review.comment %></div>
+          <div class="review-item__author" style="font-size: small"><%= review.name %></div>
+          <div class="review-item__created" style="font-size: small"><%= review.createdHuman() %></div>
+        </div>
+      <% }) %>
+    <% } else  { %>
+      <p>Aun no hay reseñas</p>  
+    <% } %>
+  </div>
+</section>

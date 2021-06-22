@@ -1,0 +1,157 @@
+<%- include('./partials/admin-head.ejs') %>
+<%- include('./partials/breadcrumb.ejs', { pages: [{ label: 'Personalizar' } ] }) %>
+
+<style>
+  .emptyRow {
+    font-style: italic;
+  }
+</style>
+
+<form action="customize" method="post">
+  <section>
+    <h2>General</h2>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="secondlyInput">
+      <label for="storeName">Store name:</label>
+      <input id="storeName" type="text" name="storeName" id="storeName" value="<%= PREFERENCES.storeName %>">
+    </div>
+    <div class="secondlyInput">
+      <label for="storeName">Global message:</label>
+      <input id="storeName" type="text" name="globalMessage" id="globalMessage" value="<%= PREFERENCES.globalMessage %>">
+    </div>
+    <h3>Payment Gateway</h3>
+    <input type="radio" name="paymentGateway" value="stripe" id="stripe-payment-gateway" <%= !PREFERENCES.paymentGateway || (PREFERENCES.paymentGateway === 'stripe')? 'checked' : '' %>>
+    <label for="stripe-payment-gateway">Stripe</label><br>
+    <input type="radio" name="paymentGateway" value="mercadopago" id="mercadopago-payment-gateway" <%= PREFERENCES.paymentGateway === 'mercadopago'? 'checked' : '' %>>
+    <label for="mercadopago-payment-gateway">MercadoPago</label>
+
+    <h3>Header Menu</h3>
+    <div id="headerMenuItemContainer">
+      <% if (PREFERENCES.headerMenu && PREFERENCES.headerMenu.length > 0) { 
+        PREFERENCES.headerMenu.forEach(menuItem => { %>
+          <%- include('./partials/headerMenuItem.ejs', { menuItem: menuItem }) %>
+        <% })
+      } %>
+    </div>
+    <div id="newHeaderMenu">Add new link</div>
+    
+    <h3>Footer Menu</h3>
+    <div id="footerMenuItemContainer">
+      <% if (PREFERENCES.footerMenu && PREFERENCES.footerMenu.length > 0) { 
+        PREFERENCES.footerMenu.forEach(menuItem => { %>
+          <%- include('./partials/footerMenuItem.ejs', { menuItem: menuItem }) %>
+        <% })
+      } %>
+    </div>
+    <div id="newFooterMenu">Add new link</div>
+    <div class="secondlyInput">
+      <label for="footerMessage">Footer message:</label>
+      <input id="footerMessage" type="text" name="footerMessage" id="footerMessage" value="<%= PREFERENCES.footerMessage %>">
+    </div>
+  </section>
+  <section>
+    <h2>Homepage</h2>
+    <div class="secondlyInput">
+      <label for="homepageTitle">Lead title:</label>
+      <input id="homepageTitle" type="text" name="homepageTitle" id="homepageTitle" value="<%= PREFERENCES.homepage?.title %>">
+    </div>
+    <h3>Hompage categories</h3>
+    <table id="homepageCategories">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Alternative Title</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="emptyRow">
+          <td colspan="3">
+            There are no categories selected to show in the homepage yet.
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">
+            <button class="flat" type="button" id="addHomepageCategories">[+] Add Category</button>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+
+  <button type="submit" class="primary">Save</button>
+</form>  
+
+<div class="template" id="homepageCategoryLine">
+  <table>
+    <tr>
+      <td>
+        <div class="secondlyInput">
+          <select name="homepageCategory[]" id="homepageCategory">
+            <% categories.forEach(category => { %>
+              <option value="<%= category.id %>"><%= category.title %></option>
+            <% }) %>
+          </select>
+        </div>
+      </td>
+      <td>
+        <div class="secondlyInput">
+          <input type="text" name="homepageCategoryAltTitle" id="altTitle">
+        </div>
+      </td>
+      <td>
+        <button type="button" class="remove">
+              <svg viewBox="0 0 16 16" width="1em" height="1em" focusable="false" role="img" aria-label="trash" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi-trash mx-auto b-icon bi" data-v-41be6633=""><g data-v-41be6633=""><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path></g></svg>
+        </button>
+    </tr>
+  </table>
+</div>
+
+<div class="templates" style="display: none;">
+  <%- include('./partials/headerMenuItem.ejs', { menuItem: null }) %>
+  <%- include('./partials/footerMenuItem.ejs', { menuItem: null }) %>
+</div>
+<%- include('./partials/admin-tail.ejs') %>
+
+<script>
+  const homepageCategoryTableBody = $('table#homepageCategories tbody')
+  const homepageCategoriesEmptyRow = $('table#homepageCategories tbody .emptyRow');
+
+  function addHomepageCategoryRow(categoryId, altTitle) {
+    const newRow = $('.template#homepageCategoryLine tr').clone()
+    newRow.find('.remove').click(() => {
+      newRow.remove()
+      if (homepageCategoryTableBody.children().length == 1)
+        homepageCategoriesEmptyRow.show()
+    })
+    if (categoryId) newRow.find('select').val(categoryId)
+    if (altTitle) newRow.find('input').val(altTitle)
+    newRow.appendTo(homepageCategoryTableBody)
+
+    homepageCategoriesEmptyRow.hide()
+  }
+  const previousHomepageCategories = <%- JSON.stringify(PREFERENCES?.homepage?.categories || []) %>;
+
+  if (previousHomepageCategories.length > 0) {
+    previousHomepageCategories.forEach(hompageCategoryItem => {
+      addHomepageCategoryRow(hompageCategoryItem.id, hompageCategoryItem.altTitle)
+    });
+  }
+
+  $('#addHomepageCategories').click((event) => {
+    addHomepageCategoryRow()
+  })
+  $('#newFooterMenu').click(() => {
+    $('.templates .footerMenuItem').clone().appendTo('#footerMenuItemContainer');
+  })
+
+  $('#newHeaderMenu').click(() => {
+    $('.templates .headerMenuLink').clone().appendTo('#headerMenuItemContainer');
+  })
+
+  $('.removeMenuItem').click((event) => {
+    $(event.target).parent().remove();
+  })
+</script>

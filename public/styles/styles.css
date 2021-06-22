@@ -1,0 +1,457 @@
+body {
+  font-size: medium;
+  font-family: 'Karla', sans-serif;
+}
+
+a {
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.adminBar {
+  display: block;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 6px;
+  transition: background-color 0.5s;
+  cursor: pointer;
+}
+
+.adminBar:hover {
+  background-color: blue;
+}
+
+a.adminBar:hover {
+  color: white;
+}
+
+a:hover, a:active {
+  text-decoration: none;
+  color: #5f9061;
+}
+
+.main-brand {
+  font-size: 35px;
+  margin: 0em;
+  color: #5f9061;
+  margin-bottom: 7px;
+}
+
+h1 {
+  font-size: 35px;
+  margin: 0em;
+  margin-bottom: 0.8em;
+  line-height: 1.5em;
+}
+
+h1.lead {
+  font-size: 80px;
+  line-height: 1.1;
+  margin-top: 0.5em;
+  margin-bottom: 12px;
+}
+
+h2 {
+  font-size: 25px;
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+
+
+h3 {
+  font-size: 25px;
+}
+
+
+/* 
+
+Breakpoint  	      Class infix   	Dimensions
+X-Small	            None	          <576px
+Small	              sm	            ≥576px
+Medium	            md	            ≥768px
+Large	              lg	            ≥992px
+Extra               large	xl	      ≥1200px
+Extra extra large 	xxl	            ≥1400px
+
+*/
+
+@media screen and (max-width: 992px) {
+  .main-brand { font-size: 25px; }
+  h1 { font-size: 25px; }
+  h1.lead { font-size: 50px; margin-bottom: 6px; }
+  h2 { font-size: 20px; }
+  h3 { font-size: 18px; }
+
+  .row {
+    --bs-gutter-x: 0.8rem;
+  }
+
+}
+
+p {
+  line-height: 1.6;
+}
+
+button.primary, button.secondary {
+  font-family: 'Archivo', sans-serif;
+  margin-top: 20px;
+  border-radius: 4px;
+  text-transform: capitalize;
+  transition: all 0.5s;
+}
+
+button.primary:hover:enabled {
+  background-color: #7bb17b
+}
+
+button.secondary:hover:enabled {
+  background-color: lightgrey;
+}
+
+button.primary {
+  padding: 15px 40px;
+  border: none;
+  background-color: #5f9061;
+  color: white;
+}
+
+button.primary:disabled {
+  background-color: #d6cbb5;
+}
+
+button.secondary {
+  padding: 10px 30px;
+  background-color: whitesmoke;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 30px;
+}
+
+button.success:disabled {
+  background-color: cornflowerblue;
+}
+
+button.flat {
+  background-color: transparent;
+    color: #5f9061;
+    border: none;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+button.primary.smaller, button.secondary.smaller {
+  padding: 8px 16px;
+  background-color: cornflowerblue;
+}
+
+button.featuredCategory:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.9px 2.2px rgba(0,0,0,.02), 0 2.2px 5.3px rgba(0,0,0,.028), 0 4.1px 10px rgba(0,0,0,.035), 0 7.4px 17.9px rgba(0,0,0,.042), 0 13.8px 33.4px rgba(0,0,0,.05), 0 33px 80px rgba(0,0,0,.07);
+}
+
+* {
+  box-sizing: border-box;
+  outline: none;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid lightgray;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f7f7f7;
+}
+
+tfoot {
+  background-color: #f7f7f7;
+}
+
+input.secondly {
+  width: 100%;
+  border-radius: 0;
+  border: none;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  background-color:whitesmoke;
+  padding: 15px 30px;
+  border-radius: 30px;
+}
+
+input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.secondlyInput, .validatable-input .secondlyInputInner {
+  display: flex;
+  width: 100%;
+  border: none;
+  background-color: whitesmoke;
+  padding: 15px 18px;
+  border-radius: 4px;
+  align-items: baseline;
+}
+
+.validatable-input .secondlyErrorMessage {
+  display: none;
+}
+
+.validatable-input.error .secondlyErrorMessage {
+  display: block;
+  color: red;
+  width: 18px;
+  font-weight: bold;
+}
+
+.secondlyInput label, .validatable-input label {
+  flex-shrink: 0;
+  color: #a7a7a7;
+  padding-right: 6px;
+  top: 1px;
+}
+
+.secondlyInput input,
+.secondlyInput select,
+.validatable-input input,
+.validatable-input select {
+  width: 0;
+  flex-grow: 1;
+  border: none;
+  background-color: transparent;
+}
+
+.validatable-input input[type='password'] {
+  letter-spacing: 6px;
+}
+
+.emptyContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.emptyContainer img.empty {
+  max-width: 500px;
+}
+
+.emptyContainer p {
+  text-align: center;
+  font-family: 'Alata', sans-serif;
+  font-size: x-large;
+  color: #e7e8e9;
+  margin-top: 35px;
+  line-height: 1.2;
+}
+
+.emptyContainer p strong {
+  font-weight: bold;
+  color: #bdbec0;
+  font-style: oblique;
+}
+
+.errorMessage {
+  padding: 16px;
+  background-color: lemonchiffon;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.errorMessage:empty {
+  display: none;
+}
+
+.template {
+  display: none;
+}
+
+.pseudo-a {
+  font-weight: bold;
+  cursor: pointer;
+  color: black;
+  transition: color 0.5s;
+}
+
+.pseudo-a:hover {
+  font-weight: bold;
+  cursor: pointer;
+  color: #5f9061;
+}
+
+.topPanel {
+  margin-bottom: 0px;
+}
+
+/* .tippy-box[data-theme~='error'] {
+  background-color: red;
+}
+
+.tippy-box[data-theme~='error'] > .tippy-arrow::before {
+  border-top-color: red;
+}
+
+.tippy-box[data-placement^=bottom]>.tippy-arrow:before {
+  border-bottom-color: red; 
+} */
+
+ul.without-bullets {
+  list-style: none;
+  padding-left: 0;
+}
+
+/* Product Item */
+.store__product-item-container {
+  margin-bottom: 40px;
+}
+
+.store__product-item {
+  /* box-shadow: 0 0.9px 2.2px rgba(0,0,0,.02), 0 2.2px 5.3px rgba(0,0,0,.028), 0 4.1px 10px rgba(0,0,0,.035), 0 7.4px 17.9px rgba(0,0,0,.042), 0 13.8px 33.4px rgba(0,0,0,.05), 0 33px 80px rgba(0,0,0,.07); */
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.store__product-item__image-container {
+  width: 100%;
+  padding-bottom: calc(100% / 1);
+  overflow: hidden;
+  align-items: flex-end;
+  justify-content: flex-end;
+  position: relative;
+  display: flex;
+  border-radius: 3px;
+  background-color: white;
+  background-size: cover;
+  background-position: center;
+}
+
+.store__product-item__image {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: scale(1.07);
+  transition: all 0.4s;
+  background-color: white;
+}
+
+.store__product-item__image-container:hover .store__product-item__image  {
+  opacity: 1;  
+  transform: scale(1.005);
+}
+
+.store__product-item__title {
+  font-size: medium;
+  font-weight: normal;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin: 10px 0px 0 0px;
+  color: initial;
+}
+
+.store__product-item__price {
+  color: black;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.quantity {
+  width: unset;
+  padding-left: 5px;
+  padding-right: 5px;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.quantity button {
+  background-color: transparent;
+  padding: 0px 14px;
+  color: #5f9061;
+  font-weight: bold;  
+  border: none; 
+}
+
+.quantity button:disabled {
+  color: lightgray;
+}
+
+.stickyElement {
+  position: sticky;
+  top: 16px;
+}
+
+.std-grid {
+    display: grid;
+    grid-gap: 24px;
+    align-items: center;
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.first-column {
+  grid-column: 1;
+}
+
+.page-content ul {
+  padding-left: 1.5rem;
+  list-style: none; /* Remove default bullets */
+}
+
+.page-content ul li::before {
+  content: "\2022";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+  color: cornflowerblue; /* Change the color */
+  font-weight: bold; /* If you want it to be bold */
+  display: inline-block; /* Needed to add space between the bullet and the text */
+  width: 1em; /* Also needed for space (tweak if needed) */
+  margin-left: -1em; /* Also needed for space (tweak if needed) */
+}
+
+.out-of-stock {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  border-radius: 4px;
+  background-color: white;
+  opacity: 0.85;
+  padding: 8px;
+  text-align: center;
+  font-weight: bold;
+  box-shadow: 0 0.9px 2.2px rgb(0 0 0 / 2%), 0 2.2px 5.3px rgb(0 0 0 / 3%), 0 4.1px 10px rgb(0 0 0 / 4%), 0 7.4px 10px rgb(0 0 0 / 4%), 0 10px 10px rgb(0 0 0 / 5%), 0 10px 10px rgb(0 0 0 / 7%);
+}
+
+.compare-at {
+  text-decoration: line-through;
+  color: lightgray;
+  font-size: initial;
+  margin-left: 4px;
+}
+
+.star {
+  width: 20px;
+}
+
+.star.small {
+  width: 14px;
+}
+
+.bold {
+  font-weight: bold;
+}

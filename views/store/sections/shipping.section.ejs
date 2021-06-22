@@ -1,0 +1,100 @@
+<section class="split-banner" style="margin-top: 40px; margin-bottom: 80px;">
+  <style>
+    .self-align-stretch {
+      align-self: stretch;
+    }
+
+    .shippment-details {
+      margin-top: 12px;
+    }
+
+    .shippment-details__item, .shippment-details__header {
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid whitesmoke;
+      padding: 12px 0;
+    }
+
+    .shippment-details__header {
+      justify-content: flex-end;
+    }
+
+    .shippment-details__item img {
+      width: 34px;
+      margin-right: 10px;
+    }
+
+    .text-span {
+      flex-basis: calc(100% / 3);
+    }
+
+    .icon-span {
+      flex-basis: calc(100% / 3);
+    }
+
+    @media screen and (max-width: 992px) {
+      .shippment-details__item, .shippment-details__header {
+        padding: 8px 0;
+      }
+
+      .hide-mobile {
+        display: none;
+      }
+
+      .text-span {
+        flex-basis: 40%;
+      }
+
+      .icon-span {
+        flex-basis: 20%;
+      }
+    }
+  </style>
+  <div class="split-banner__description">
+    <h1>En bicicleta a todo Montevideo</h1>
+    <p>Averigua cuanto cuesta el envio a tu barrio. También puedes pasar por Ciudad Vieja a retirar tu orden.</p>
+    <%- include('../../partials/validatable-input.ejs', { label: 'Barrio', name: 'neighbourhood', options: locations, class: 'self-align-stretch', tab: 5 }) %>
+    <div class="shippment-details">
+      <div class="shippment-details__header">
+        <div class="text-span">Precio</div>
+        <div class="text-span">Recíbelo en</div>
+      </div>
+      <div class="shippment-details__item">
+        <div class="icon-span">
+          <img src="/statics/assets/shipping-standard.svg">
+          <span class="hide-mobile">
+            Estandar
+          </span>
+        </div>
+        <div class="text-span bold">$<span id="standardShipment"><%= locations[0].standard %></span></div>
+        <div class="text-span bold">4 días</div>
+      </div>
+      <div class="shippment-details__item">
+        <div class="icon-span">
+          <img src="/statics/assets/shipping-standard.svg">
+          <span class="hide-mobile">
+            Express
+          </span>
+        </div>
+        <div class="text-span bold">$<span id="expressShipment"><%= locations[0].express %></span></div>
+        <div class="text-span bold">2 días</div>
+      </div>
+    </div>
+  </div>
+  <div class="split-banner__image" style="background-image: url(/statics/assets/rider-takes-off-from-a-checkpoint-in-the-honest-eds-alley-news-photo-485109270-1550850723.jpg); background-position: right;"/>
+  <script>
+    const locations = <%- JSON.stringify(locations) %>;
+
+    $('#neighbourhood').change(function (event) {
+      const locSelected = event.target.value
+      for (let location of locations) {
+        if (location.text === locSelected) {
+          $('#expressShipment').text(location.express)
+          $('#standardShipment').text(location.standard)
+          break
+        }
+      }
+      alert(express)
+    })
+  </script>
+</section>

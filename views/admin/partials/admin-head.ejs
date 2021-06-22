@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title><%= PREFERENCES.storeName %>, Administración</title>
+      <meta name="description" content="The straight-forward e-commerce platform for selling your products"></head>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      
+
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+
+      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <script src="//cdn.jsdelivr.net/npm/sortablejs@1.8.4/Sortable.min.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.20.0/vuedraggable.umd.min.js"></script>
+      <script src="/statics/scripts/pell.js"></script>
+
+      <!-- Tippy -->
+      <script src="https://unpkg.com/@popperjs/core@2"></script>
+      <script src="https://unpkg.com/tippy.js@6"></script>
+      <link rel="icon" type="image/png" sizes="32x32" href="/statics/assets/favicon.png">
+      <link rel="manifest" href="/statics/manifest.json">
+      <meta name="msapplication-TileColor" content="#ffffff">
+      <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+      <meta name="theme-color" content="#ffffff">
+  
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+      <link rel="stylesheet" type="text/css" href="/statics/styles/tiendu/pell.css">
+      <link href="/statics/styles/tiendu/base.css" rel="stylesheet">
+      <script src="/statics/scripts/utils.js" async></script>
+
+      <style>
+        img.logo {
+          width: 160px;
+        }
+
+        nav {
+          background-color: blue;
+          padding-top: 24px;
+          margin-bottom: 0px;
+        }
+
+        menu {
+          padding: 0;
+          margin: 0;
+          margin-top: 32px;
+          display: flex;
+        }
+
+        menu .menu-item {
+          padding: 16px;
+          display: inline-block;
+          color: whitesmoke;
+          border-top-right-radius: 2px;
+          border-top-left-radius: 2px;
+          flex-shrink: 0;
+          transition: background-color 0.3s;
+        }
+
+        menu .menu-item:hover {
+          background-color: #0000df;
+        }
+
+        menu .menu-item.current {
+          background-color: white;
+          color: black;
+        }
+
+        menu .menu-item i {
+          margin-right: 4px;
+        }
+
+        .top-menu {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .extra-actions {
+          color: white;
+          display: flex;
+          font-size: larger
+        }
+
+        .extra-actions span {
+          margin-right: 8px;
+        }
+
+        .extra-actions button {
+          padding: 16px;
+          color: white;
+          background-color: #0000df;
+          border: none;
+          border-radius: 2px;
+          font-size: medium;
+          cursor: pointer;
+        }
+
+        .extra-actions button:first-child {
+          margin-right: 8px;
+        }
+
+        button.primary {
+          background-color: blue;
+        }
+
+        /* mobile */
+        @media screen and (max-width: 992px) {
+          nav {
+            padding-top: 16px;
+          }
+
+          img.logo {
+            width: 120px;
+          }
+
+          .no-padding-mobile {
+            padding: 0;
+          }
+
+          .hide-on-mobile {
+            display: none;
+          }
+
+          menu {
+            overflow: auto;
+            margin-top: 16px;
+          }
+
+          menu .menu-item {
+            padding: 12px;
+          }
+
+          menu .menu-item:not(.current) i {
+            margin-right: 0;
+          }
+
+          menu .menu-item.current .hide-on-mobile {
+            display: inline-block;
+          }
+
+          .extra-actions button {
+            padding: 12px;
+          }
+        }
+
+      </style>
+    </head>
+    <body>
+      <nav>
+        <div class="container">
+          <div class="top-menu">
+            <a class="logo-title-link" href="/admin">
+              <img class="logo" src="/statics/assets/tiendu/logo-simple.svg">
+            </a>
+            <div class="extra-actions">
+              <a href="/" target="_blank">
+                <button>
+                  <span class="hide-on-mobile">Tienda</span>
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </button>
+              </a>
+              <button onclick="logout()">                
+                <i class="bi bi-door-open"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="container no-padding-mobile">
+          <menu>
+            <a class="menu-item <%= locals.tab === 'dashboard'? 'current' : '' %>" href="/admin"><i class="bi bi-flag-fill"></i> <span class="hide-on-mobile">Resúmen</span></a>
+            <a class="menu-item <%= locals.tab === 'orders'? 'current' : '' %>" href="/admin/orders"><i class="bi bi-inboxes-fill"></i> <span class="hide-on-mobile">Órdenes</span></a>
+            <a class="menu-item <%= locals.tab === 'products'? 'current' : '' %>" href="/admin/products"><i class="bi bi-bag-fill"></i> <span class="hide-on-mobile">Productos</span></a>
+            <a class="menu-item <%= locals.tab === 'categories'? 'current' : '' %>" href="/admin/categories"><i class="bi bi-tag-fill"></i> <span class="hide-on-mobile">Categorías</span></a>
+            <a class="menu-item <%= locals.tab === 'users'? 'current' : '' %>" href="/admin/users"><i class="bi bi-people-fill"></i> <span class="hide-on-mobile">Usuarios</span></a>
+            <a class="menu-item <%= locals.tab === 'pages'? 'current' : '' %>" href="/admin/pages"><i class="bi bi-file-earmark-fill"></i> <span class="hide-on-mobile">Páginas</span></a>
+            <a class="menu-item <%= locals.tab === 'marketing'? 'current' : '' %>" href="/admin/marketing"><i class="bi bi-megaphone-fill"></i> <span class="hide-on-mobile">Marketing</span></a>
+            <a class="menu-item <%= locals.tab === 'customize'? 'current' : '' %>" href="/admin/customize"><i class="bi bi-nut-fill"></i> <span class="hide-on-mobile">Personalizar</span></a>
+          </menu>
+        </div>
+      </nav>
+      <script>
+        function logout() {
+          fetchApi('/api/account/logout', {
+            params: { _csrf: '<%= csrfToken %>' },
+            success: function (data) {
+              window.location.href = '/'
+            },
+            error: function (error) {
+              alert('Hubo un error. Intentalo de nuevo.')
+              console.error(error)
+            },
+            internalError: function (error) {
+              alert('Hubo un error. Intentalo de nuevo.')
+              console.error(error)
+            }
+          })
+        }
+      </script>
+      <div class="container">

@@ -1,0 +1,54 @@
+<section>
+  <style>
+    .caracteristicas {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-gap: 16px;
+    }
+    
+    .caracteristica {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .caracteristica h2 { 
+      margin-bottom: 12px;
+    }
+    .caracteristica img {
+      width: 170px;
+    }
+
+    .caracteristica p {
+      text-align: center;
+    }
+
+    @media screen and (max-width: 992px) { 
+      .caracteristicas {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+  <div class="caracteristicas">
+    <div class="caracteristica">
+      <img src="/statics/assets/cualidades-nimuuu-01.svg" alt="">
+      <h2>100% vegetales</h2>
+      <p>Ninguno de los productos contiene derivados de animales</p>
+    </div>
+    <div class="caracteristica">
+      <img src="/statics/assets/cualidades-nimuuu-01.svg" alt="">
+      <h2>Packaging mínimo</h2>
+      <p>Reducimos el packaging, es biodegradable o retornable.</p>
+    </div>
+    <div class="caracteristica">
+      <img src="/statics/assets/cualidades-nimuuu-02.svg" alt="">
+      <h2>Envio verde</h2>
+      <p>Realizamos el envío en bicicleta o transporte eléctrico</p>
+    </div>
+    <div class="caracteristica">
+      <img src="/statics/assets/cualidades-nimuuu-02.svg" alt="">
+      <h2>Productores locales</h2>
+      <p>Apoyamos a pequeños productores locales responsables</p>
+    </div>
+  </div>
+</section>

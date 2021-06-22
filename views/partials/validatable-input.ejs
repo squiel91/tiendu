@@ -1,0 +1,99 @@
+<% if (!locals.name) {
+  locals.name = locals.label.split(' ').map((word, index) => index == 0? word.toLowerCase() : word[0].toUpperCase() + word.substring(1)).join('')
+} %>
+<div class="validatable-input <%= name %> <%= locals.class %>">
+  <div class="secondlyInputInner">
+    <img src="/statics/assets/exclamation-circle.svg" id="<%= name %>-error" class="secondlyErrorMessage" style="margin-right: 8px;">
+    <label for="<%= name %>"><%= label %></label>
+    <% if (locals.options) { %>
+      <select id="<%= name %>" name="<%= name %>" style="margin-bottom: -3px;" <% if (locals.dataCheckout) { %> data-checkout="<%= dataCheckout %>" <% } %> <% if (locals.tab) { %> tabindex="<%= tab %>" <% } %>>
+        <% options.forEach(option => { 
+          const optionValue = typeof option.value !== 'undefined'? option.value : option.value || option.text || option %>
+          <option 
+            value="<%= optionValue %>"
+            <% if (optionValue === locals.value) { %>
+              selected
+            <% } %>
+          >
+            <%= option.text || option.value || option %>
+          </option>
+        <% }) %>
+      </select>
+    <% } else { %>
+      <input type="<%= locals.type || 'text' %>" name="<%= name %>" value="<%= locals.value !== null && locals.value !== undefined ? locals.value : '' %>" id="<%= name %>" <% if (locals.dataCheckout) { %> data-checkout="<%= dataCheckout %>" <% } %> <% if (locals.tab) { %> tabindex="<%= tab %>" <% } %>>
+    <% } %>
+    <% if (locals.help || locals.mobileHelp) { %>
+      <svg id="<%= name %>-help" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#a7a7a7" class="bi bi-question-circle-fill <%= locals.mobileHelp? 'mobile-help' : '' %>" viewBox="0 0 16 16">
+        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247zm2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"/>
+      </svg>
+      <script>
+        tippy('#<%= name %>-help', {
+          content: `<%= locals.help || locals.mobileHelp %>`,
+          offset: [0, 12]
+        })  
+        </script>
+    <% } %>
+    <% if (locals.type === 'card') { %>
+      <img id="card-type" src="/statics/assets/cc.svg" width="43" alt="card type">
+    <% } %>
+    <% if (locals.type === 'password') { %>
+      <svg id="show-password" onclick="toggleRevelePass()" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#a7a7a7" class="bi bi-eye" viewBox="0 0 16 16">
+        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+      </svg>
+      <svg id="hide-password" style="display: none;" onclick="toggleRevelePass()" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#a7a7a7" class="bi bi-eye-slash" viewBox="0 0 16 16">
+        <path d="M10.79 12.912l-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.027 7.027 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.088z"/>
+        <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708l-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6l-12-12 .708-.708 12 12-.708.707z"/>
+      </svg>
+    <% } %>
+    <% if (locals.button) { %>
+      <button class="<%= button.class %>"><%= button.text %></button>
+    <% } %>
+  </div>
+  <script>
+    tippy('#<%= name %>-error', {
+      offset: [0, 12],
+      theme: 'error'
+    })
+
+    <% if (locals.type === 'card') { %>
+      new Cleave('.validatable-input.<%= name %> input', {
+        creditCard: true
+      });
+    <% } %>
+
+    <% if (locals.type === 'zip') { %>
+      $('.validatable-input.<%= name %> input').attr('maxlength', 5)
+    <% } %>
+
+    <% if (locals.type === 'cardExp') { %>
+      new Cleave('.validatable-input.<%= name %> input', {
+        date: true,
+        datePattern: ['m', 'y']
+      });
+    <% } %>
+
+    <% if (locals.type === 'cvc') { %>
+      new Cleave('.validatable-input.<%= name %> input', {
+        numeral: true
+      });
+
+      $('.validatable-input.<%= name %> input').attr('maxlength', 3)
+    <% } %>
+
+    <% if (locals.type === 'password') { %>
+      function toggleRevelePass() {
+        const passField = $('#password')
+        if (passField.attr("type") === 'password') {
+          $('#password').attr("type","text")
+          $('#show-password').hide()
+          $('#hide-password').show()
+        } else {
+          $('#password').attr("type","password")
+          $('#hide-password').hide()
+          $('#show-password').show()
+        }
+      }
+    <% } %>
+  </script>
+</div>

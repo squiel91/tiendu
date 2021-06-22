@@ -1,0 +1,73 @@
+<%- include('../partials/store-head.ejs') %>
+<%- include('../partials/breadcrumb.ejs', { pages: [{ label: 'Cuenta' }] }) %> 
+<h1>Mi cuenta</h1>
+<div class="row">
+  <div class="col-md-6 mb-4">
+    <h2>General</h2>
+    <table>
+      <tr>
+        <th>Nombre</th>
+        <td><%= user.firstName %></td>
+      </tr>
+      <tr>
+        <th>Apellido</th>
+        <td><%= user.lastName %></td>
+      </tr>
+      <tr>
+        <th>Email</th>
+        <td><%= user.email %></td>
+      </tr>
+      <tr>
+        <th>Contraseña</th>
+        <td><a href="/cuenta/restablecer">Cambiar contraseña</a></td>
+      </tr>
+    </table>
+  </div>
+  <div class="col-md-6">
+    <h2>Mis órdenes</h2>
+
+    <% if (orders && orders.length > 0) { %>
+      <table>
+        <tr>
+          <th>Fecha</th>
+          <th>Facturado</th>
+          <th>Estado</th>
+        </tr>
+        <% orders.reverse().forEach(order => { %>
+          <tr>
+            <td>
+              <a href="/ordenes/<%= order.id %>?from=account">
+                <%= order.prettyCreated() %></td>
+              </a>
+            <td>$ <%= order.billed %></td>
+            <td><span class="badge bg-primary" style="text-transform: uppercase;"><%= order.status %></span></td>
+          </tr>
+        <% }) %>
+      </table>
+    <% } else { %>
+      <p>Aún no tienes ninguna orden</p>
+    <% } %>
+  </div>
+</div>
+<button class="secondary" onclick="logout()">Salir</button>
+
+<script>
+  function logout() {
+    fetchApi('/api/account/logout', {
+      params: { _csrf: '<%= csrfToken %>' },
+      success: function (data) {
+        window.location.href = '/'
+      },
+      error: function (error) {
+        alert('Hubo un error. Intentalo de nuevo.')
+        console.error(error)
+      },
+      internalError: function (error) {
+        alert('Hubo un error. Intentalo de nuevo.')
+        console.error(error)
+      }
+    })
+  }
+</script>
+
+<%- include('../partials/store-tail.ejs') %>

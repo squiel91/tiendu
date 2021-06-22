@@ -1,0 +1,48 @@
+<style>
+
+  header {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 0 0 80px 0;
+  }
+
+  .main-title {
+    font-family: 'Sacramento', cursive;
+    font-size: 8em;
+    margin-bottom: -48px;
+  }
+
+  .header-title {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: x-large;
+    width: 60%;
+  }
+
+  @media screen and (max-width: 992px) {
+
+    header {
+      padding: 24px 0 40px 0;
+    }
+
+    .main-title {
+      font-family: 'Sacramento', cursive;
+      font-size: 5em;
+      margin-bottom: -40px;
+    }
+
+    .header-title {
+      margin-bottom: 14px;
+      font-size: medium;
+      width: 80%;
+    }
+
+  }
+</style>
+
+<header>
+  <div class="main-title">Vivero</div>
+  <h1 class="header-title"><%= PREFERENCES.homepage?.title %></h1>
+</header>

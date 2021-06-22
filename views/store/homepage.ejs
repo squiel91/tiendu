@@ -1,0 +1,83 @@
+<%- include('../partials/store-head.ejs') %>
+<style>
+  .browseCategory {
+    margin-top: 1em;
+    font-size: x-large;
+    margin-bottom: 0.8em;
+  }
+  
+  .browseCategory a {
+    font-weight: bold;
+  }
+
+  .browseCategory .categoryArrow {
+    position: relative;
+    left: 10px;
+    top:2px;
+    transition: left 0.5s;
+  }
+  
+  .browseCategory:hover .categoryArrow {
+    left: 20px;
+  }
+
+  @media screen and (max-width: 992px) {
+    p.subtitle {
+      font-size: 1.3em;
+    }
+  }
+
+  section.split-banner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 16px;
+    justify-content: stretch;
+    align-items: center;
+  }
+
+  .split-banner__description {
+    padding-right: 80px;
+  }
+  
+  .split-banner__image {
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 4px;
+  }
+
+  @media screen and (max-width: 992px) {
+    .split-banner__description {
+      padding-right: 30px;
+    }
+  }
+  
+  @media screen and (max-width: 767px) {
+    section.split-banner {
+      grid-template-columns: 1fr;
+      grid-row-gap: 36px;
+    }
+
+    .split-banner__description {
+      padding: 20px;
+    }
+
+    .split-banner__image {
+      height: 300px;
+      order: -1;
+    }
+  }
+
+</style>
+<%- include('./sections/header.section.ejs', { featuredCategories }) %>
+  <%- include('./sections/featured.section.ejs', { featuredProducts }) %>
+  <% for (let homepageCategoryItem of homepageCategories) { %>
+    <%- include('./sections/category.section.ejs', {
+      category: homepageCategoryItem.category,
+      altTitle: homepageCategoryItem.altTitle 
+    }) %>
+  <% } %>
+  <%- include('./sections/sell.section.ejs') %>
+  <%- include('./sections/subscribe.section.ejs') %> 
+  <%- include('./sections/reviews.section.ejs', { reviews }) %> 
+<%- include('../partials/store-tail.ejs') %>

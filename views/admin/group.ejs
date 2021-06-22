@@ -1,0 +1,100 @@
+<%- include('./partials/admin-head.ejs') %>
+<%- include('./partials/breadcrumb.ejs', { pages: [{ label: 'Productos', link: '/admin/products' }, { label: 'Grupos de variantes' } ] }) %>
+
+<style>
+  .variants-vertical-grid {
+    display: grid;
+    grid-gap: 32px;
+  }
+
+  .variants-horizontal-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    align-items: center;
+    grid-gap: 32px;
+  }
+</style>
+
+<div id="vue-group-editor" v-cloak>
+  <h1>Grupo de variantes</h1>
+  <h2>Opciones</h2>
+  <p>Comienza definiendo primero las opciones.</p>
+  <tiendu-button normal-text="Agregar opción" @click="addOption()"></tiendu-button>
+  <div class="variants-vertical-grid">
+    <div class="variants-horizontal-grid">
+      <div v-for="(option, index) in options" key="option.name" class="option">
+        <tiendu-input placeholder="Talle" :remove="options.length > 1" @remove="removeOption(index)" label="Opción" v-model="option.name"></tiendu-input>
+      </div>
+      <div class="handler">
+        Handler
+      </div>
+    </div>
+    <div class="variants-horizontal-grid" v-for="variant in variants" class="variant">
+      <div v-for="(value, index) in variant.values">
+        <tiendu-input placeholder="Valor" v-model="variant.values[index]"></tiendu-input>
+      </div>
+      <div class="edit-button">
+        <tiendu-button normal-text="Editar" @click="addOption()"></tiendu-button>
+      </div>
+    </div>
+  </div>
+  <p>Prosigue eligiendo asociando opciones con sus variantes.</p>
+  <tiendu-button normal-text="Agregar variante" @click="addVariant()"></tiendu-button>
+  {{ variants }}
+
+</div>
+
+<script type="module">
+  import tienduButton from '/statics/scripts/tiendu-button.vue.js'
+  import tienduSecondaryButton from '/statics/scripts/tiendu-secondary-button.vue.js'
+  import tienduInput from '/statics/scripts/tiendu-input.vue.js'
+
+  axios.defaults.baseURL = `${window.location.protocol}//${window.location.host}/api/`
+  const groupId = (window.location.pathname.split('/')).pop()
+
+  new Vue({
+    el: '#vue-group-editor',
+    data() {
+      return {
+        newOptionName: '',
+        options: [],
+        optionId: 1,
+        variants: []
+      }
+    },
+    components: {
+      tienduButton,
+      tienduSecondaryButton,
+      tienduInput
+    },
+    created() {
+      this.addOption()
+    },
+    methods: {
+      addOption() {
+        this.options.push({
+          name: '',
+          localId: this.optionId
+        })
+        for(let variant of this.variants) {
+          variant.values.push('')
+        }
+      },
+      removeOption(index) {
+        this.options.splice(index, 1)
+        for(let variant of this.variants) {
+          variant.values.splice(index, 1)
+        }
+      },
+      addVariant() {
+        const variant = {
+          values: this.options.map(option => ''),
+          handler: ''
+        }
+        this.variants.push(variant)
+      }
+    },
+  })
+</script>
+<%- include('./partials/admin-tail.ejs') %>

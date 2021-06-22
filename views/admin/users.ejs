@@ -1,0 +1,38 @@
+<%- include('./partials/admin-head.ejs') %>
+<%- include('./partials/breadcrumb.ejs', { pages: [{ label: 'Usuarios' } ] }) %>
+
+<div id="vue-users" v-cloak>
+  <h1>Clientes</h1>
+  <vue-table :cols="colUsers" resource-name="users" :link="false"></vue-table>
+
+</div>
+
+<script type="module">
+  import vueTable from '/statics/scripts/tiendu-dynamic-table.vue.js'
+  axios.defaults.baseURL = `${window.location.protocol}//${window.location.host}/api/`
+  
+  new Vue({
+    el: '#vue-users',
+    data() {
+      return {
+        colUsers: [
+          { 
+            label: 'Nombre', 
+            val: 'firstName',
+            format: (firstName, user) => firstName + ' ' + user.lastName 
+          },
+          { label: 'Email', val: 'email' },
+          { label: '# Carrito', val: 'cart', format: cart => cart?.length || '-' },
+          { label: 'Desde', val: 'since', hideMobile: true }
+        ],
+        colAdmins: [] 
+      }
+    },
+    components: {
+      'vue-table': vueTable
+    }
+  })
+
+</script>
+
+<%- include('./partials/admin-tail.ejs') %>

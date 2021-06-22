@@ -1,0 +1,91 @@
+<%- include('../partials/store-head.ejs') %>
+<%- include('../partials/breadcrumb.ejs', { 
+  pages: [
+    { label: 'Cart', link: '/cart' },
+    { label: 'Checkout' }
+  ] 
+}) %>
+
+<script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
+
+<%# styles %>
+<style>
+
+  .stripe {
+    width: 140px;
+    margin-left: 30px;
+    /* float: right; */
+  }
+  input[type="checkbox"] {
+    margin-right: 10px;
+  }
+
+</style>
+
+<%# content %>
+<h2>Contact Information</h2>
+<%- include('../partials/validatable-input.ejs', { label: 'First name' }) %> 
+<%- include('../partials/validatable-input.ejs', { label: 'Last name' }) %> 
+<%- include('../partials/validatable-input.ejs', { label: 'Email' }) %>
+<%# include('../partials/validatable-input.ejs', { label: 'Phone' }) %>
+
+<h2>Shipping Address</h2>
+<%# include('../partials/validatable-input.ejs', { label: 'Line 2', help: 'The format you should use is the following: [Street name] [House/flat number] [Unit number]' }) %> 
+<%- include('../partials/validatable-input.ejs', { label: 'Country', options: countryCodes }) %>
+<%- include('../partials/validatable-input.ejs', { label: 'State' }) %> 
+<%- include('../partials/validatable-input.ejs', { label: 'City' }) %> 
+<%- include('../partials/validatable-input.ejs', { label: 'Address', help: 'The address where to send the shippment.' }) %> 
+<%- include('../partials/validatable-input.ejs', { label: 'Zip code', name: 'zip', type: 'zip', help: 'A 5 digits code that uniquely identifies a geographic area' }) %> 
+<p>
+  <input type="checkbox" id="remember" checked><label for="remember">Remember my shipping address in this device</label>
+</p>
+<h2>Card details</h2>
+<%- include('../partials/validatable-input.ejs', { label: 'Card number', type: 'card' }) %> 
+<%- include('../partials/validatable-input.ejs', { label: 'Expiration date (MM/YY)', name: 'cardExpiration', type: 'cardExp' }) %> 
+<%- include('../partials/validatable-input.ejs', { label: 'CVC', name: 'cvc', type: 'cvc',help: 'A 3 digits code, usually displayed at the back of the card' }) %> 
+
+<div class="errorMessage"></div>
+
+<button id="checkout-button" class="primary" onclick="pay()"> 
+  Pay $<%=  totalPrice %>
+</button>
+
+<img class="stripe" src="/statics/assets/stripe.svg" alt="Powered by Stripe">
+
+<%# scripts %>
+<script>
+  function pay () {
+    const checkoutParams = {
+      firstName: $('#firstName').val(),
+      lastName: $('#lastName').val(),
+      email: $('#email').val(),
+      phone: $('#phone').val(),
+      address: $('#address').val(),
+      // line1: $('#line1').val(),
+      // line2: $('#line2').val(),
+      country: $('#country').val(),
+      state: $('#state').val(),
+      city: $('#city').val(),
+      zip: $('#zip').val(),
+      cardNumber: $('#cardNumber').val().replaceAll(' ', ''),
+      cardExpiration: $('#cardExpiration').val(),
+      cvc: $('#cvc').val(),
+      _csrf: '<%= csrfToken %>',
+      remember: $('#remember').is(":checked")
+    }
+
+    fetchApi('/api/cart/checkout-stripe', { // POST is the default method
+      params: checkoutParams,
+      success: function (data) {
+        window.location.href = `/orders/${data.order.id}`
+      }
+    })
+  }
+
+  $('.validatable-input input').keydown(event => {
+    $(event.target).parent().parent().removeClass('error')
+  })
+</script>
+
+<%- include('../partials/store-tail.ejs') %>
+

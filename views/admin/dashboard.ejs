@@ -1,0 +1,34 @@
+<%- include('./partials/admin-head.ejs') %>
+<%- include('./partials/breadcrumb.ejs', { pages: [{ label: 'Resúmen' } ] }) %>
+
+
+<div id="vue-dashboard" v-cloak>
+  <h1>Úlitmas órdenes</h1>
+  <vue-table :cols="cols" :params="params" resource-name="orders"></vue-table>
+</div>
+
+<script type="module">
+  axios.defaults.baseURL = `${window.location.protocol}//${window.location.host}/api/`
+
+  import vueTable from '/statics/scripts/tiendu-dynamic-table.vue.js'
+  new Vue({
+    el: '#vue-dashboard',
+    data() {
+      return {
+        cols: [
+          { label: '#', val: 'number' },
+          { label: 'Cliente', val: 'personal.fullName', span: 3 },
+          { label: 'Email', hideMobile: true, val: 'personal.email', span: 3 },
+          { label: 'Facturado', format: value => '$' + value, val: 'billed', span: 2 },
+          { label: 'Estado', val: 'status', span: 2, html: true, format: status => `<span class="status-chip ${status.replace(' ', '-')}">${status}</span>` }
+        ],
+        params: { status: ['impaga', 'procesando pago', 'a confirmar', 'confirmada'] }
+      }
+    },
+    components: {
+      'vue-table': vueTable
+    }
+  })
+</script>
+
+<%- include('./partials/admin-tail.ejs') %>

@@ -1,0 +1,85 @@
+<%- include('../partials/store-head.ejs') %>
+<%- include('../partials/breadcrumb.ejs', { pages: [{ label: 'Ingresar' }] }) %>
+
+<style>
+  .login-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .validatable-input {
+    grid-column: 1;
+  }
+
+  .main-action {
+    justify-self: start;
+  }
+
+  @media screen and (max-width: 992px) {
+    .login-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .main-action {
+      justify-self: stretch;
+    }
+  }
+</style>
+<div class="errorMessage"></div>
+<h1>Ingresa al Vivero</h1>
+<div class="std-grid login-grid">
+  <%- include('../partials/validatable-input.ejs', { label: 'Email', value: locals.prefillEmail }) %>
+  <%- include('../partials/validatable-input.ejs', { label: 'Contraseña', name: 'password', type: 'password' }) %>
+  <div>¿Olvidaste tu contraseña? <a href="/cuenta/restablecer">Restablécela</a></div>
+  <div>
+    <input type="checkbox" id="remember" checked> <label for="remember">Recordarme en este dispositivo</label>
+  </div>
+  <button class="primary main-action first-column no-margin statefull" onclick="login()">Inicia sesión</button>
+  <div class="first-column">¿No tenés una cuenta? <a href="/cuenta/registrarse<% if (locals.redirect) { %>?redirect=<%= redirect %><% } %>">Registrate</a></div>
+</div>
+
+<script>
+  function login() {
+    const email = $('#email').val()
+    const password = $('#password').val()
+    const remember = $('#remember').is(':checked')
+
+    setButtonState({ loading: 'Un momento...' })
+    fetchApi('/api/account/login', {
+      params: { 
+        email,
+        password,
+        remember, 
+        _csrf: '<%= csrfToken %>'
+      },
+      success: function (data) {
+        const url = new URL(window.location.href)
+        setButtonState({ 
+          success: 'Bienvenido', 
+          callback: function() {
+            let redirect = url.searchParams.get("redirect")
+            if (redirect) { 
+              window.location.href = redirect.replace('@', '#')
+            } else {
+              // default redirection
+              if (data.user.admin) window.location.href = '/admin'
+              else window.location.href = '/'
+            }
+          }
+        })
+      },
+      executeOnError: function () {
+        setButtonState({ default: true })
+      }
+    })
+  }
+
+  $('.validatable-input input').keydown(event => {
+    $(event.target).parent().parent().removeClass('error')
+  })
+
+  $('.validatable-input input').on('keypress', event => {
+    if(event.which == 13) login()
+  })
+</script>
+<%- include('../partials/store-tail.ejs') %>
+
