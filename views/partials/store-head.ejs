@@ -120,7 +120,7 @@
         display: none;
         position: absolute;
         margin-top: 0px;
-        padding: 16px 0 24px 0;
+        padding: 16px 0;
         border-radius: 8px;
         box-shadow: 0 0.9px 2.2px rgba(0,0,0,.02), 0 2.2px 5.3px rgba(0,0,0,.028), 0 4.1px 10px rgba(0,0,0,.035), 0 7.4px 17.9px rgba(0,0,0,.042), 0 13.8px 33.4px rgba(0,0,0,.05), 0 33px 80px rgba(0,0,0,.07);
         opacity: 0;
@@ -143,11 +143,15 @@
         margin-left: 0;
         padding: 10px 30px;
         background-color: white;
-        transition: background-color .5s;
+        transition: background-color .3s;
+      }
+
+      .collapsableMenu .menuItem:hover {
+        background-color: whitesmoke;
       }
 
       .collapsableMenu .titleSeparator {
-        padding: 25px 30px 5px 30px;
+        padding: 16px 30px 4px 30px;
         font-size: small;
         color: gray;
       }
@@ -291,7 +295,7 @@
                 <% if (locals.listedCategories?.length > 0) {  %>
                   <div class="titleSeparator" style="padding-top: 12px;">Todas las categorías</div>
                   <% listedCategories.forEach(listedCategory => { %>
-                    <div class="menuItem" style="padding-top: 6px; padding-bottom: 6px;"><a class="featuredCategory" href="/categorias/<%= listedCategory.handle %>"><button><%= listedCategory.title %></button></a></div>
+                    <a class="menuItem" href="/categorias/<%= listedCategory.handle %>"><%= listedCategory.title %></a>
                   <% }) %>
                 <% } %>
                 <% if (PREFERENCES.footerMenu && PREFERENCES.footerMenu.length > 0) { %>
@@ -307,7 +311,7 @@
               <a href="/carrito">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" stroke="currentColor" class="miniCart" viewBox="0 0 100 100">
                   <style>                  
-                    .cart-line{
+                    .cart-line {
                       fill:none;
                       stroke-width:8;
                       stroke-linecap:round;
@@ -348,12 +352,12 @@
                 <% if (locals.user) { %>
                   <a class="menuItem" href="/cuenta">Mi cuenta</a>
                 <% } else { %>
-                  <div class="menuItem"> <a href="/cuenta/ingresar">Ingresa</a> / <a href="/cuenta/registrarse">Registrate</a></div>
+                  <div class="menuItem"><a href="/cuenta/ingresar">Ingresa</a> / <a href="/cuenta/registrarse">Registrate</a></div>
                 <% } %>
                 <% if (locals.listedCategories?.length > 0) {  %>
                   <div class="titleSeparator">Todas las categorías</div>
                   <% listedCategories.forEach(listedCategory => { %>
-                    <div class="menuItem" style="padding-top: 6px; padding-bottom: 6px;"><a class="featuredCategory" href="/categorias/<%= listedCategory.handle %>"><button><%= listedCategory.title %></button></a></div>
+                    <a class="menuItem" href="/categorias/<%= listedCategory.handle %>"><%= listedCategory.title %></a>
                   <% }) %>
                 <% } %>
                 <% if (PREFERENCES.footerMenu && PREFERENCES.footerMenu.length > 0) { %>

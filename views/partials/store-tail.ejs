@@ -125,11 +125,12 @@
       <div class="container">
         <div class="footer-columns">
           <div class="col-lg-3 d-none d-lg-block">
-            <% if (PREFERENCES.footerMenu && PREFERENCES.footerMenu.length > 0) { %>
-              <% PREFERENCES.footerMenu.forEach(menuItem => { %>
-                <a class="category-item <%= menuItem.classes %>" href="<%= menuItem.link %>"><%= menuItem.text %></a>
-              <% }) %>
-            <% } %>
+            <% if (locals.listedCategories?.length > 0) {  %>
+              <div style="font-size: small; color: gray; margin-bottom: 16px">Todas las categorías</div>
+              <% listedCategories.forEach(listedCategory => { %>
+                <a class="category-item" href="/categorias/<%= listedCategory.handle %>"><%= listedCategory.title %></a>
+              <% }) 
+            } %>
           </div>
           <div class="col-lg-3 col-6 footer-menu-col d-none d-lg-block mb-5">
             <div class="get-in-touch" style="margin-top: 0;">
@@ -141,8 +142,28 @@
             <div class="get-in-touch mb-5">
               <img src="/statics/assets/email.svg" alt="Email icon"><a href="mailto:info@tiendu.uy">info@tiendu.uy</a>
             </div>
+
+            <% if (PREFERENCES.footerMenu && PREFERENCES.footerMenu.length > 0) { %>
+              <% PREFERENCES.footerMenu.forEach(menuItem => { %>
+                <a class="category-item <%= menuItem.classes %>" href="<%= menuItem.link %>"><%= menuItem.text %></a>
+              <% }) %>
+            <% } %>
           </div>
-          <div class="d-lg-none positionRelative mb-4">
+          <div class="d-lg-none positionRelative">
+            <div class="collapsable-footer-menu toggleMenu">
+              <div>Todas las categorías</div>
+              <div>+</div>
+            </div>
+            <div class="collapsableMenu reduceMargin">
+              <% if (locals.listedCategories?.length > 0) {  %>
+                <% listedCategories.forEach(listedCategory => { %>
+                  <a class="menuItem" href="/categorias/<%= listedCategory.handle %>"><%= listedCategory.title %></a>
+                <% }) %>
+              <% } %>
+            </div>
+            <div class="menuOverlay"></div>
+          </div>
+          <div class="d-lg-none positionRelative mb-5">
             <div class="collapsable-footer-menu toggleMenu">
               <div>Más información</div>
               <div>+</div>
@@ -171,7 +192,7 @@
             <div id="" class="validatable-input newsletter" style="margin-bottom: 16px;">
               <div class="secondlyInputInner">
                 <label for="newsletter">Email</label>
-                <input id="newsletter" class="dontDisable" type="text">
+                <input id="newsletter" placeholder=" " class="dontDisable" type="text">
                 <button class="subscribe-newsletter">Suscríbete</button>
               </div>
               <div class="secondlyErrorMessage"></div>

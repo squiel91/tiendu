@@ -20,7 +20,7 @@
         <% }) %>
       </select>
     <% } else { %>
-      <input type="<%= locals.type || 'text' %>" name="<%= name %>" value="<%= locals.value !== null && locals.value !== undefined ? locals.value : '' %>" id="<%= name %>" <% if (locals.dataCheckout) { %> data-checkout="<%= dataCheckout %>" <% } %> <% if (locals.tab) { %> tabindex="<%= tab %>" <% } %>>
+      <input type="<%= locals.type || 'text' %>" placeholder=" " name="<%= name %>" value="<%= locals.value !== null && locals.value !== undefined ? locals.value : '' %>" id="<%= name %>" <% if (locals.dataCheckout) { %> data-checkout="<%= dataCheckout %>" <% } %> <% if (locals.tab) { %> tabindex="<%= tab %>" <% } %>>
     <% } %>
     <% if (locals.help || locals.mobileHelp) { %>
       <svg id="<%= name %>-help" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#a7a7a7" class="bi bi-question-circle-fill <%= locals.mobileHelp? 'mobile-help' : '' %>" viewBox="0 0 16 16">
