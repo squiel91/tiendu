@@ -1,6 +1,10 @@
-# Tiendu
+<p align="center">
+  <img alt="Tiendu" width="240" src="https://tiendu.uy/assets/tiendu-rainbow.png">
+</p>
 
-**La tienda online minimalista para PyMEs uruguayas.**
+# Tiendu Ecommerce
+
+**La tienda online minimalista para las PyMEs uruguayas.**
 
 Especialmente diseñada para emprendimientos en crecimiento que buscan flexibilidad y un costo reducido de mantenimiento. Desarrollada en Nodejs y Vuejs, utilizando MongoDB y MercadoPago. Bajo la premisa de desarroladores-primero, toda la plataforma de ecommerce es facilmente extensible y personalizable a los requerimientos de cada negocio.
 
