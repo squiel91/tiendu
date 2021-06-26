@@ -1,6 +1,4 @@
-<p align="center">
-  <img alt="Tiendu" width="240" src="https://tiendu.uy/assets/tiendu-rainbow.png">
-</p>
+<img alt="Tiendu" width="160" src="https://tiendu.uy/assets/tiendu-rainbow.png">
 
 # Tiendu Ecommerce
 
