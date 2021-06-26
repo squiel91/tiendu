@@ -1,6 +1,6 @@
 <img alt="Tiendu" width="160" src="https://tiendu.uy/assets/tiendu-rainbow.png">
 
-# Tiendu Ecommerce
+# Tiendu ecommerce
 
 **La tienda online minimalista para las PyMEs uruguayas.**
 
