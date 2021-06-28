@@ -43,7 +43,7 @@ exports.getHomepage = async (req, res, next) => {
 
     const reviews = await Review.find()
 
-    res.render('store/homepage.ejs', { featuredProducts, reviews: reviews.filter(review => review.comment), neighbourhoodCodes, homepageCategories, title: 'moda adaptada a vos' })
+    res.render('store/homepage.ejs', { featuredProducts, reviews: reviews.filter(review => review.comment), neighbourhoodCodes, homepageCategories, title: 'plantas online en Uruguay' })
   } catch (error) { next(error) }
 }
 
@@ -99,7 +99,7 @@ exports.getProduct = async (req, res, next) => {
       product,
       recommendedProducts,
       fromCategory,
-      variantIndex: product.hasVariants ? parseInt(req.query.variante || 1) : 0,
+      variantIndex: product.hasVariants && req.query.variante ? parseInt(req.query.variante) : undefined,
       title: product.title
     })
   } catch (error) { next(error) }

@@ -119,7 +119,7 @@ button.primary {
 }
 
 button.primary:disabled {
-  background-color: #d6cbb5;
+  background-color: #afd8b1;
 }
 
 button.secondary {
@@ -197,7 +197,6 @@ input[type="checkbox"] {
   width: 100%;
   border: none;
   background-color: whitesmoke;
-  padding: 15px 18px;
   border-radius: 4px;
   align-items: baseline;
 }
@@ -219,7 +218,7 @@ input[type="checkbox"] {
   -webkit-appearance:none;
   flex-shrink: 0;
   color: #a7a7a7;
-  padding-right: 6px;
+  padding: 16px 8px 16px 16px;
   top: 1px;
 }
 
@@ -234,13 +233,26 @@ input[type="checkbox"] {
   flex-grow: 1;
   border: none;
   background-color: transparent;
+  padding: 16px 16px 16px 8px;
+}
+
+.validatable-input button, .secondlyInput button {
+  padding: 16px;
+  border: none;
+  background-color: transparent;
 }
 
 .secondlyInput select, .validatable-input select {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
    background-repeat: no-repeat;
    background-position-y: 50%;
-   background-position-x: 98%;
+   background-position-x: 97%;
+}
+
+@media screen and (max-width: 992px) {
+  .secondlyInput select, .validatable-input select {
+    background-position-x: 95%;
+  }
 }
 
 .validatable-input input[type='password'] {
@@ -304,18 +316,6 @@ input[type="checkbox"] {
 .topPanel {
   margin-bottom: 0px;
 }
-
-/* .tippy-box[data-theme~='error'] {
-  background-color: red;
-}
-
-.tippy-box[data-theme~='error'] > .tippy-arrow::before {
-  border-top-color: red;
-}
-
-.tippy-box[data-placement^=bottom]>.tippy-arrow:before {
-  border-bottom-color: red; 
-} */
 
 ul.without-bullets {
   list-style: none;
@@ -388,12 +388,11 @@ ul.without-bullets {
   padding-left: 5px;
   padding-right: 5px;
   display: inline-block;
-  margin-right: 8px;
+  margin-right: 16px;
 }
 
 .quantity button {
   background-color: transparent;
-  padding: 0px 14px;
   color: #5f9061;
   font-weight: bold;  
   border: none; 

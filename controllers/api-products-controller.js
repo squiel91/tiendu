@@ -91,7 +91,7 @@ exports.patchProduct = async (req, res, next) => {
     const productId = req.params.productId
     const product = await Product.findById(productId)
 
-    console.log(product.stock)
+    console.log(typeof product.stock)
     product.title = req.body.title
     product.handle = req.body.handle
     product.price = req.body.price

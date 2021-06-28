@@ -20,43 +20,46 @@
   <div class="secondlyInput quantity"> 
     <button id="decreaseQuantity" onclick="modifyCart(-1)" disabled>-</button>
     <span id="cartQuantity"><%= [null, undefined].includes(stock) || stock > 0? 1 : 0 %></span>
-    <button id="increaseQuantity" onclick="modifyCart(1)" <% if (![null, undefined].includes(stock) && stock <= 1) { %> disabled <% } %>>+</button>
+    <button id="increaseQuantity" onclick="modifyCart(1)">+</button>
   </div>
   <% if ([null, undefined].includes(stock) || stock > 0) { %>
-    <button class="primary add-to-cart" onclick="addProdToCart()">Agregar al carrito</button>
+    <button class="primary add-to-cart" onclick="addProdToCart()" %>>Agregar al carrito</button>
   <% } else { %> 
     <button class="primary add-to-cart" disabled>Agotado</button>
   <% } %> 
 </div>
 
 <script>
-  const maxStock = <%= stock || 9 %>;
+  var variantId = <%= variantIndex || 'undefined'%>;
+  var maxStock = <%= stock || 9 %>;
   productQuantity = 1
-
+  var hasVariants = <%= hasVariants || false %>
   function modifyCart(modify) {
     productQuantity += modify
-
     $('#decreaseQuantity').attr("disabled", productQuantity == 1);
-    $('#increaseQuantity').attr("disabled", productQuantity >= maxStock);
 
     $('#cartQuantity').text(productQuantity)
   }
 
   function addProdToCart() {
-    const email = $('#email').val()
-    const password = $('#password').val()
-    const remember = $('#remember').is(':checked')
-
-    fetchApi('/api/cart', {
-      params: { 
-        productId: '<%= product._id %>',
-        quantity: productQuantity,
-        variantId: <%= variantIndex || 'undefined'%>,
-        _csrf: '<%= csrfToken %>'
-      },
-      success: function (data) {
-        window.location.href = '/carrito'
+    if (hasVariants && !variantId) {
+      alert('Elegí una variante primero y luego tocá "Agregar Al Carrito"');
+    } else {
+      if (hasVariants && (maxStock !== undefined && maxStock !== null) && productQuantity > maxStock) {
+        alert('Solo quedan ' + maxStock + ' unidades en stock. Disminuí la cantidad y luego tocá "Agregar Al Carrito"');
+      } else {
+        fetchApi('/api/cart', {
+          params: { 
+            productId: '<%= product._id %>',
+            quantity: productQuantity,
+            variantId: variantId,
+            _csrf: '<%= csrfToken %>'
+          },
+          success: function (data) {
+            window.location.href = '/carrito'
+          }
+        })
       }
-    })
+    }
   }
 </script>

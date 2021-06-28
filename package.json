@@ -1,19 +1,18 @@
 {
-  "name": "tiendu-demo",
-  "version": "1.0.0",
-  "description": "",
+  "name": "tiendu-ecommerce",
+  "version": "1.2",
+  "description": "La tienda online para PyMEs uruguayas",
   "engines": {
     "node": "15.0.1"
   },
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "prod": "pm2 start server.js --name tiendu-demo",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "prod": "pm2 start server.js --name tiendu-demo"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Tiendu Ecommerce",
+  "license": "GNU GPLv3 y ver en GitHub https://github.com/squiel91/tiendu#licencia",
   "devDependencies": {
     "eslint": "^7.18.0",
     "eslint-config-standard": "^16.0.2",

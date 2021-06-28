@@ -10,14 +10,15 @@
 
 
 <style>
-
   h1.productTitle {
     margin-top: 16px;
     margin-bottom: 0;
   }
 
-  .price {
+  .price-container {
     margin-top: 12px;
+    margin-bottom: 40px;
+    font-size: x-large;
     display: flex;
     align-items: center;
   }
@@ -30,8 +31,13 @@
     flex-grow: 1;
   }
 
+  .share-container {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+  }
+
   .share {
-    margin-top: 20px;
     border: none;
     border-radius: 50px;
     width: 50px;
@@ -47,15 +53,19 @@
 
   ul.shareList  {
     list-style-type: none;
-    padding: 0;
-    padding: 10px 30px 0 30px;
-    display: flex;
+    padding-left: 32px;
+    margin: 0;
+    display: none;
     justify-content: space-around;
   }
 
   ul.shareList li {
     display: inline-block;
-    margin-right: 14px;
+    margin-right: 24px;
+  }
+
+  ul.shareList li:last-child {
+    margin-right: 0;
   }
 
   ul.shareList li img {
@@ -96,6 +106,9 @@
   }
 
   @media screen and (max-width: 992px) {
+    .price {
+      font-size: x-large;
+    }
     .recommendations {
       margin-top: 40px;
     }
@@ -107,7 +120,12 @@
     background-size: cover;
     background-position: center;
     border-radius: 4px;
-
+    background-repeat: no-repeat;
+  }
+  
+  .currentImage:not([class*="no-image"]):hover {
+    background-size: initial;
+    cursor: move;
   }
 
   .thumbnailImageContainer {
@@ -232,24 +250,58 @@
     font-weight: bold; 
     margin-top: 40px;
   }
+
+  .option-spacing {
+    margin-top: 16px;
+  }
 </style>
 <% 
   let price, compareAt, stock
+  let varyingStock = false
+  const variantData = {}
   if (product.hasVariants) {
-    if (variantIndex > product.variants.length) variantIndex = 1
-    price = product.variants[variantIndex - 1].price
-    compareAt = product.variants[variantIndex - 1].compareAt
-    stock = product.variants[variantIndex - 1].stock
+    variantData.hasVariant = true
+    if (variantIndex && parseInt(variantIndex) > 0 && parseInt(variantIndex) <= product.variants.length) {
+      price = product.variants[variantIndex - 1].price
+      compareAt = product.variants[variantIndex - 1].compareAt
+      stock = product.variants[variantIndex - 1].stock
+    } else {
+      let maxPrice = product.variants[0].price
+      let minPrice = maxPrice
+      let comparteAt = product.variants[0].comparteAt
+      let stock = product.variants[0].stock
+      
+      for (let variant of product.variants) {
+        maxPrice = Math.max(maxPrice, variant.price)
+        minPrice = Math.min(minPrice, variant.price)
+        // in case the compare at is equal in all versionas, shows that
+        if (comparteAt !== variant.comparteAt) {
+          comparteAt = undefined
+        }
+        if (stock !== variant.stock) {
+          varyingStock = true
+        }
+      }
+      price = minPrice === maxPrice ? maxPrice : minPrice + '~' + maxPrice
+
+      variantData.price = price,
+      variantData.comparteAt = comparteAt,
+      variantData.stock = stock,
+      variantData.varyingStock = varyingStock
+    }
   } else {
     price = product.price
     compareAt = product.compareAt
     stock = product.stock
   } 
 %>
+<script>
+  var variantData = <%- JSON.stringify(variantData) %>;
+</script>
 <% let userReview;%>
 <div class="row">
   <div class="col-lg-6 imageColumn">
-    <div class="currentImage" style="background-image: url('<%= product.images?.length > 0 ? product.images[0].coverSrc : '/statics/assets/no-image.png' %>');"></div>
+    <div class="currentImage <%= product.images?.length > 0 ? '' : 'no-image' %>" style="background-image: url('<%= product.images?.length > 0 ? product.images[0].coverSrc : '/statics/assets/no-image.png' %>');"></div>
     <% if (product.images?.length > 1) { %>
       <div class="thumbnailImageContainer">
         <% product.images.forEach((image, index) => { %>
@@ -274,26 +326,180 @@
           <% } %>
         </span>
       </div>
-      <h1 class="price mb-0">
-        $ <%= price %>
-        <% if (compareAt) { %>
-        <span class="compare-at">&nbsp;$<%= compareAt %>&nbsp;</span>
-        <% } %>
-      </h1>
+      <div class="price-container">
+        <span class="price">$ <%= price %></span>
+        <span class="compare-at"><% if (compareAt) { %>&nbsp;$<%= compareAt %>&nbsp;<% } %></span>
+      </div>
       <div class="details-grid">
         <img style="width: 100%;" src="/statics/assets/handing-icon.svg">
         <div>
-          Te lo enviamos gratis en todo Uruguay.
+          Te lo enviamos gratis a todo Uruguay
         </div>
         <img style="width: 100%;" src="/statics/assets/stock-icon.svg">
-        <div>
-          <%= stock == 0? 'Sin stock' : (stock? stock == 1? 'Última unidad' : `Solo quedan ${stock} unidades` : 'Disponible') %>.
+        <div class="stock">
+            <% if (varyingStock) { %>
+              <%= 'Elije una variante para ver stock' %>
+            <% } else {
+              if (!stock && stock !== 0) { %>
+                <%= 'Stock agotado' %>
+              <% }
+              if (stock === 0) { %>
+                <%= 'Stock agotado' %>
+              <% }
+              if (stock === 1) { %>
+                <%= 'Última unidad' %>
+              <% }
+              if (stock > 1) { %>
+                <%= 'Solo quedan ' + stock + ' unidades' %>
+              <% }
+            } %>
         </div>
       </div>
+      <div class="variant-selectors">
       <% if (product.hasVariants) { %>
-        <%- include('../partials/validatable-input.ejs', { label: 'Opciones', name: 'options', value: variantIndex, options: product.variants.map((variant, index) => { return { text: variant.values.join(', '), value: index + 1 } }), class: 'first-col' }) %>
+        <form autocomplete="off">
+          <% for (const [optionIndex, option] of product.options.entries()) { 
+            const optionValues = [...new Set(product.variants.map(variant => variant.values[optionIndex]))] %>
+            <%- include('../partials/validatable-input.ejs', { label: option, name: `${option}`, options: optionValues, button: { html: `<button class="clear" type="button" style="display: none; margin-left: -8px;" onclick="$('#${option}').val('').change();"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16"><path d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"/></svg></button>` }, class: 'first-col ' + (optionIndex > 0? 'option-spacing' : '') }) %>
+          <% } %>
+        </form>
       <% } %>
-      <%- include('../partials/addToCart.ejs', { stock, variantIndex: variantIndex || undefined }) %>
+      </div>
+      <%- include('../partials/addToCart.ejs', { stock, variantIndex: variantIndex || undefined, hasVariants: product.hasVariants }) %>
+      <script>
+        var product = <%- JSON.stringify(product) %>;
+
+        var selectors = $('.variant-selectors select');
+
+        // showing the cancel selection
+        selectors.change(function (event) {
+          if ($(event.target).val() && selectors.length > 1) {
+            $(event.target).parent().find('.clear').show();
+          } else {
+            $(event.target).parent().find('.clear').hide();
+          }
+
+          var allSelected = true // used at the bottom of the method
+          var optionsSelected = []; // array with all current selections
+          validOptions = []; // array of dictionaries with the valid options to display
+          for (var selectorIndex = 0; selectorIndex < selectors.length; selectorIndex++) {
+            validOptions.push({}); // initialization
+            if (selectors[selectorIndex].value) {
+              optionsSelected.push(selectors[selectorIndex].value); // initialization
+            } else {
+              allSelected = false
+              optionsSelected.push(undefined); // initialization
+            }
+          }
+
+          // I fist iterate over the options, then over the variants and then ones again over the options
+          for (var optionIndex = 0; optionIndex < optionsSelected.length; optionIndex++) {
+            for (var variantIndex = 0; variantIndex < product.variants.length; variantIndex++) {
+              var variant = product.variants[variantIndex];
+              var candidateOption = variant.values[optionIndex];
+              // if already included no need to test again
+              if (!validOptions[optionIndex][candidateOption]) {
+                var isCandidate = true;
+                for (var innerOptionIndex = 0; innerOptionIndex < optionsSelected.length; innerOptionIndex++) {
+                  if (innerOptionIndex != optionIndex && optionsSelected[innerOptionIndex] && optionsSelected[innerOptionIndex] !== variant.values[innerOptionIndex]) {
+                    isCandidate = false;
+                    break;
+                  }
+                }
+                if (isCandidate) {
+                  validOptions[optionIndex][candidateOption] = true;
+                }
+              }
+            }
+          }
+
+          for (var selectorIndex = 0; selectorIndex < selectors.length; selectorIndex++) {
+            var selector = selectors[selectorIndex]
+            validOptionsForSelector = validOptions[selectorIndex]
+            // skipping the first one that is the -- select one --
+            for (var optionIndex = 1; optionIndex < selector.options.length; optionIndex++) {
+              var option = selector.options[optionIndex]
+              console.log($(selector).prop('name'))
+              option.disabled = !validOptionsForSelector[option.value];
+            }
+          }
+
+          if (allSelected) variantSelected(optionsSelected)
+          else variantSelected()
+        })
+
+        function variantSelected(selection) {
+          if (!selection) {
+            variantId = undefined
+            $('.price').text('$ ' + variantData.price);
+            if (variantData.compareAt) {
+              $('.compare-at').html('&nbsp;$ ' + variantData.compareAt + '&nbsp;');
+            } else {
+              $('.compare-at').empty();
+            }
+            var stockEl = $('.stock')
+            if (variantData.varyingStock) {
+              stockEl.text('Elije una variante para ver stock');
+            } else {
+              if (!stock && stock !== 0) {
+                stockEl.text('En stock');
+              }
+              if (stock === 0) {
+                stockEl.text('Stock agotado');
+              }
+              if (stock === 1) {
+                stockEl.text('Última unidad');
+              }
+              if (stock > 1) {
+                stockEl.text('Solo quedan ' + stock + ' unidades');
+              }
+            }
+          } else {
+            $('.add-to-cart').prop('disabled', false);
+            $('.add-to-cart').text('Agregar al carrito');
+            var matchingVariant;
+            for (var variantIndex = 0; variantIndex < product.variants.length; variantIndex++) {
+              var variant = product.variants[variantIndex];
+              var match = true
+              for (var valueIndex = 0; valueIndex < variant.values.length; valueIndex++) {
+                if (variant.values[valueIndex] !== selection[valueIndex]) {
+                  match = false
+                  break;
+                }
+              }
+              if (match) {
+                matchingVariant = product.variants[variantIndex]
+                variantId = variantIndex + 1;
+                break;
+              }
+            }
+            $('.price').text('$ ' + matchingVariant.price)
+            if (matchingVariant.compareAt) {
+              $('.compare-at').html('&nbsp;$ ' + matchingVariant.compareAt + '&nbsp;')
+            } else {
+              $('.compare-at').empty()
+            }
+            var stock = matchingVariant.stock
+
+            var stockEl = $('.stock')
+            if (!stock && stock !== 0) {
+              stockEl.text('En stock')
+            }
+            if (stock === 0) {
+              stockEl.text('Stock agotado')
+              $('.add-to-cart').prop('disabled', true)
+              $('.add-to-cart').text('Stock agotado')
+            }
+            if (stock === 1) {
+              stockEl.text('Última unidad')
+            }
+            if (stock > 1) {
+              stockEl.text('Solo quedan ' + stock + ' unidades')
+            }
+            maxStock = stock;
+          }
+        }
+      </script>
       <div class="tab-header">
         <% if (product.description) { %><a href="#descripcion" class="tab-button active">Descripción</a><% } %>
         <a href="#resenas" class="tab-button">Reseñas</a>
@@ -359,48 +565,44 @@
           </div> 
         <% } %>
       </div>
-
-      <div class="positionRelative">
-        <button class="toggleMenu share">
+      <div class="share-container">
+        <button class="share" onclick="$('ul.shareList').fadeToggle(200);">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share-fill" viewBox="0 0 16 16">
             <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
           </svg>
         </button>
-        <div class="collapsableMenu">
-          <ul class="shareList">
-            <li>
-              <a 
-                href="https://api.whatsapp.com/send?text=Mirá lo que encontré en el Vivero! <%= url %>"
-                data-action="share/whatsapp/share"
-                title="Share on WhatsApp"
-                target="_blank"
-                class="shareLink"
-              >
-                <img src="/statics/assets/whatsapp.svg" alt="WhatsApp share icon">
-              </a>
-            </li>
-            <li>
-              <a 
-                href="https://www.facebook.com/sharer/sharer.php?u=<%= url %>&quote=Mirá lo que encontré en el Vivero!"
-                title="Share on Facebook"
-                target="_blank"
-                class="shareLink"
-              >
-                <img src="/statics/assets/facebook.svg" alt="Facebook share icon">
-              </a>
-            </li>
-            <li>
-              <a
-                href="mailto:?subject=Del Vivero!&amp;body=Mirá lo que encontré en el Vivero! <%= url %>"
-                title="Share by Email"
-                class="shareLink"
-              >
-                <img src="/statics/assets/email.svg" alt="Email share icon">
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div class="menuOverlay"></div>
+        <ul class="shareList">
+          <li>
+            <a 
+              href="https://api.whatsapp.com/send?text=Mirá lo que encontré en el Vivero! <%= url %>"
+              data-action="share/whatsapp/share"
+              title="Share on WhatsApp"
+              target="_blank"
+              class="shareLink"
+            >
+              <img src="/statics/assets/whatsapp.svg" alt="WhatsApp share icon">
+            </a>
+          </li>
+          <li>
+            <a 
+              href="https://www.facebook.com/sharer/sharer.php?u=<%= url %>&quote=Mirá lo que encontré en el Vivero!"
+              title="Share on Facebook"
+              target="_blank"
+              class="shareLink"
+            >
+              <img src="/statics/assets/facebook.svg" alt="Facebook share icon">
+            </a>
+          </li>
+          <li>
+            <a
+              href="mailto:?subject=Del Vivero!&amp;body=Mirá lo que encontré en el Vivero! <%= url %>"
+              title="Share by Email"
+              class="shareLink"
+            >
+              <img src="/statics/assets/email.svg" alt="Email share icon">
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -448,7 +650,7 @@
   })
 
   var reviewValue = <%= userReview?.value || 'null' %>;
-''
+
   if (reviewValue) {
     reviewState(reviewValue)
   }
@@ -516,12 +718,24 @@
     // TODO: enviarlo al back
   }
 </script>
+<% if (recommendedProducts.length > 0) { %>
+  <div class="recommendations">
+    <h2>También te pueden interesar</h2>
+    <%- include('./snippets/list-products.ejs', { products: recommendedProducts }) %>
+  </div>
+<% } %>
 
-<div class="recommendations">
-  <h2>También te pueden interesar</h2>
-  <%- include('./snippets/list-products.ejs', { products: recommendedProducts, empty: "No products to recommend." }) %>
-</div>
+<% if (product.images?.length > 1) { %>
+  <script>
+    $('.currentImage:not([class*="no-image"])').mousemove(function (event) {
+      var el = event.target
+      var viewerHeight = el.offsetHeight
+      el.style.backgroundPosition = (event.offsetX/viewerHeight) * 100 + "% " + ((event.offsetY/viewerHeight) * 100 + "%");
+    }).mouseout(function (event) {
+      var el = event.target
+      el.style.backgroundPosition = 'center';
+    });
+  </script>
+<% } %>
 
 <%- include('../partials/store-tail.ejs') %>
-
-

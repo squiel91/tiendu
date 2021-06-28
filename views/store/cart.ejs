@@ -5,11 +5,9 @@
   .cart__error {
     color: red;
     font-weight: bold;
-    background-image: url('/statics/assets/alert.svg');
-    background-repeat: no-repeat;
-    background-size: contain;
-    padding-left: 40px;
     display: inline;
+    margin-top: -4px;
+    grid-column: 1 / -1;
   }
 
   .cart__item-grid {
@@ -132,6 +130,10 @@
   }
 
   @media screen and (max-width: 767px) {
+    .cart__error {
+      margin-top: 8px;
+    }
+    
     .cart__item-grid {
       grid-template-columns: auto 1fr auto;
       grid-auto-flow: dense;
@@ -161,7 +163,7 @@
 
     .item-separator {
       display: block;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       grid-column: 1 / -1;
     }
 
@@ -195,9 +197,22 @@
     <div class="unit-price-label">Precio unitario</div>
     <div class="quantity-label">Cantidad</div>
     <div class="line"></div>
-    <% for (let cartItem of cart) { %>
+    <% for (let cartItem of cart) {
+      let prodStock
+      if (
+        (!cartItem.variantId && cartItem.quantity > cartItem.product.stock) || 
+        (cartItem.variantId && 
+          (
+            (![null, undefined].includes(cartItem.product.variants[cartItem.variantId -1].stock)) &&
+            (cartItem.quantity > cartItem.product.variants[cartItem.variantId -1].stock)
+          )
+        )
+      ) {
+        error = true 
+        prodStock = !cartItem.variantId ? cartItem.product.stock : cartItem.product.variants[cartItem.variantId - 1].stock
+      } %>
       <div class="item-separator"></div>
-      <div class="cart__thumbnail" <%- cartItem.product.images?.length > 0? `style="background-image: url('${cartItem.product.images[0].thumbSrc}');"` : '' %>></div>
+      <div class="cart__thumbnail" style="background-image: url('<%= cartItem.product.images?.length > 0 ? cartItem.product.images[0].thumbSrc : '/statics/assets/no-image.png' %>');"></div>
       <div class="title">
         <a href="/productos/<%= cartItem.product.handle %>"><%= cartItem.product.title %></a><br>
         <% if (cartItem.variantId) { %><%= cartItem.product.variants[cartItem.variantId - 1].values?.join(', ') %><% } %>
@@ -206,20 +221,20 @@
         <b>$ <%= cartItem.product.totalPrice(cartItem.variantId) %></b>
         </div>
       <div class="quantity-container">
-        <% if (cartItem.quantity > cartItem.product.stock) { %>
-          <% error = true %>
-          <% if (cartItem.product.stock == 0) { %>
-            <p class="cart__error">Se agotó el stock.</p>
-          <% } else { %>
-            <p class="cart__error">Solo queda<%= cartItem.product.stock > 1? 'n' : '' %> <%= cartItem.product.stock %> en stock.</p>
-          <% } %>
-        <% } %>
         <div class="secondlyInput quantity"> 
           <button onclick="modifyCart('<%= cartItem.product._id %>', <%= cartItem.variantId || 'undefined' %>, -1)">-</button>
           <%= cartItem.quantity %>
           <button onclick="modifyCart('<%= cartItem.product._id %>', <%= cartItem.variantId || 'undefined' %>, 1)" <%= cartItem.product.stock <= cartItem.quantity? 'disabled' : '' %>>+</button>
         </div>
       </div>
+      <% if (cartItem.quantity > prodStock) { %> 
+        <p class="cart__error">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle-fill" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+          </svg>
+          <%= prodStock == 0 ? 'Se agotó el stock.' : `Solo queda${prodStock > 1 ? 'n' : ''} ${prodStock} en stock.` %>
+        </p>
+      <% } %>
       <div class="item-separator"></div>
     <% } %>
     <div class="line"></div>

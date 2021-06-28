@@ -91,7 +91,7 @@
       <input type="checkbox" v-model="hasVariants" name="has-variants" id="has-variants">
       <label for="has-variants" style="margin-left: 8px;">Tiene variantes</label>
     </div>
-    <div v-show="hasVariants" style="overflow-y: auto;" class="first-col span-3-col">
+    <div v-show="hasVariants" style="overflow: hidden;" class="first-col span-3-col">
       <variants :default-price="price" :default-compare-at="compareAt" :default-stock="stock" v-model="variantsData"></variants>
     </div>
     <div class="first-col span-3-col">
