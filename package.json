@@ -1,6 +1,6 @@
 {
-  "name": "tiendu-ecommerce",
-  "version": "1.2",
+  "name": "tiendu",
+  "version": "1.2.1",
   "description": "La tienda online para PyMEs uruguayas",
   "engines": {
     "node": "15.0.1"
@@ -12,7 +12,7 @@
     "prod": "pm2 start server.js --name tiendu-demo"
   },
   "author": "Tiendu Ecommerce",
-  "license": "GNU GPLv3 y ver en GitHub https://github.com/squiel91/tiendu#licencia",
+  "license": "SEE LICENSE IN license.md",
   "devDependencies": {
     "eslint": "^7.18.0",
     "eslint-config-standard": "^16.0.2",
