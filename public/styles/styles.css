@@ -210,6 +210,8 @@ input[type="checkbox"] {
   color: red;
   width: 18px;
   font-weight: bold;
+  padding: 16px;
+  margin-right: -8px;
 }
 
 .secondlyInput label, .validatable-input label {

@@ -104,5 +104,5 @@ mongoose.connect(conUri)
     })
   })
   .catch((err) => {
-    console.log('ERROR: could not stablish connection with the database.', err)
+    console.error('ERROR: could not stablish connection with the database.', err)
   })

@@ -79,7 +79,6 @@ exports.postCoupon = async (req, res, next) => {
 exports.patchCoupon = async (req, res, next) => {
   try {
     const couponId = req.params.couponId
-    console.log(req.body)
     const coupon = await Coupon.findByIdAndUpdate(
       couponId,
       req.body,

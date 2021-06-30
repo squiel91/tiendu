@@ -70,7 +70,6 @@
             return response.json()
           })
           .then(body => {
-            console.log(body)
             if (body.error) {
               throw  new Error(body.fields[0].message);
             } else {

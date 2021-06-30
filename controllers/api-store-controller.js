@@ -228,12 +228,8 @@ exports.postCheckout = async (req, res, next) => {
             }
           }
         }
-        console.log('paymentData=', paymentData)
-
         paymentStatus = await mercadopago.payment.save(paymentData)
-        console.log('paymentStatus=', paymentStatus)
       } else {
-        console.log('Abitab or Redpagos')
         // Is Abitab or Redpagos
         paymentData = {
           transaction_amount: billed,
@@ -247,10 +243,8 @@ exports.postCheckout = async (req, res, next) => {
             }
           }
         }
-        console.log('paymentData=', paymentData)
 
         paymentStatus = await mercadopago.payment.create(paymentData)
-        console.log('paymentStatus=', paymentStatus)
       }
 
       if (paymentStatus.body.status === 'rejected') {

@@ -3,6 +3,25 @@ const Category = require('./Category')
 
 const Schema = mongoose.Schema
 
+const images = [
+  {
+    id: String,
+    src: {
+      type: String,
+      require: true
+    },
+    coverSrc: {
+      type: String,
+      require: true
+    },
+    thumbSrc: {
+      type: String,
+      require: true
+    },
+    alt: String
+  }
+]
+
 const productSchema = new Schema({
   title: {
     type: String,
@@ -21,24 +40,7 @@ const productSchema = new Schema({
     type: Boolean,
     default: false
   },
-  images: [
-    {
-      id: String,
-      src: {
-        type: String,
-        require: true
-      },
-      coverSrc: {
-        type: String,
-        require: true
-      },
-      thumbSrc: {
-        type: String,
-        require: true
-      },
-      alt: String
-    }
-  ],
+  images,
   price: {
     type: Number,
     require: true
@@ -55,7 +57,8 @@ const productSchema = new Schema({
       values: [String],
       price: Number,
       compareAt: Number,
-      stock: Number
+      stock: Number,
+      images
     }
   ],
   reviews: [{
@@ -95,6 +98,67 @@ productSchema.methods.getVariant = function (variantId) {
   if (variantId && this.hasVariants && variantId <= this.variants.length) {
     return this.variants[variantId - 1]
   }
+}
+
+productSchema.methods.hasImages = function () {
+  // The base product might not have images but the variants do.
+  return (this.images && this.images.length > 0) ||
+    (
+      this.hasVariants && this.variants?.flatMap(variant => variant.images || []).length > 0
+    )
+}
+
+productSchema.methods.getImage = function (variantId) {
+  let coverImage = this.images && this.images[0]
+  if (variantId && this.variants && this.variants[parseInt(variantId) - 1]) {
+    coverImage = this.variants[parseInt(variantId) - 1].images[0]
+  }
+  if (coverImage) return coverImage
+  return {
+    src: '/statics/assets/no-image.png',
+    thumbSrc: '/statics/assets/no-image.png',
+    coverSrc: '/statics/assets/no-image.png'
+  }
+}
+
+productSchema.methods.getCover = function () {
+  if (this.images && this.images.length > 0) return this.images[0]
+  else {
+    if (this.hasVariant && this.variants) {
+      // return the first image of the variant
+      for (const variant of this.variants) {
+        if (variant.images && variant.images > 0) {
+          return variant.images[0]
+        }
+      }
+    }
+  }
+}
+
+// do not call it more than onece, since will duplicate variant indexes
+productSchema.methods.allImages = function () {
+  // it combines all the images and ads a field 'variants' to add when a variant is selected
+  const allImages = []
+  for (const image of this.images) { // to get rid of the embeded document list, which prevents from adding new props to the images
+    allImages.push(image)
+  }
+  this.variants?.forEach((variant, variantIndex) => {
+    variant.images?.forEach(image => {
+      const imageAdded = allImages.find(testImage => testImage.id.toString() === image.id.toString())
+      const variantId = variantIndex + 1
+      if (imageAdded) {
+        if (imageAdded.variants) {
+          imageAdded.variants.push(variantId)
+        } else {
+          imageAdded.variants = [variantId]
+        }
+      } else {
+        image.variants = [variantId]
+        allImages.push(image)
+      }
+    })
+  })
+  return allImages
 }
 
 productSchema.methods.categories = function (categoriesIds) {

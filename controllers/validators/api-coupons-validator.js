@@ -3,8 +3,6 @@ const Coupon = require('../../models/Coupon')
 const stdRes = require('../../utils/standard-response')
 
 exports.validateParamsCoupon = async (req, res, next) => {
-  console.log(req.method)
-
   try {
     if (req.body.code) {
       req.body.code = req.body.code.trim()

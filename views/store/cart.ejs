@@ -13,7 +13,7 @@
   .cart__item-grid {
     display: grid;
     grid-template-columns: auto 1fr 1fr 1fr;
-    grid-gap: 16px;
+    grid-gap: 24px;
     align-items: center;
   }
 
@@ -137,7 +137,7 @@
     .cart__item-grid {
       grid-template-columns: auto 1fr auto;
       grid-auto-flow: dense;
-      grid-gap: 0 8px;
+      grid-gap: 0 16px;
     }
 
     .coupon { 
@@ -212,7 +212,7 @@
         prodStock = !cartItem.variantId ? cartItem.product.stock : cartItem.product.variants[cartItem.variantId - 1].stock
       } %>
       <div class="item-separator"></div>
-      <div class="cart__thumbnail" style="background-image: url('<%= cartItem.product.images?.length > 0 ? cartItem.product.images[0].thumbSrc : '/statics/assets/no-image.png' %>');"></div>
+      <div class="cart__thumbnail" style="background-image: url('<%= cartItem.product.getImage(cartItem.variantId).thumbSrc  %>');"></div>
       <div class="title">
         <a href="/productos/<%= cartItem.product.handle %>"><%= cartItem.product.title %></a><br>
         <% if (cartItem.variantId) { %><%= cartItem.product.variants[cartItem.variantId - 1].values?.join(', ') %><% } %>

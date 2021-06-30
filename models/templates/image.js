@@ -4,8 +4,8 @@ module.exports = image => {
     id: image.id,
     name: image.id,
     src: image.src,
-    thumbSrc: image.src,
-    coverSrc: image.src,
+    thumbSrc: image.thumbSrc,
+    coverSrc: image.coverSrc,
     alt: image.alt
   }
 }

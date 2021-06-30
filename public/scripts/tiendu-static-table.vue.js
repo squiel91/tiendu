@@ -52,11 +52,6 @@ export default {
       return current
     }
   },
-  watch: {
-    async currentPage (newPage) {
-      console.log('Page Changed', newPage)
-    }
-  },
   template: `
     [{{ pageItems }}]
     <div class="table" :class="{'add-spacing': totalPages <= 1 }">

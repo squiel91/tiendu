@@ -497,7 +497,6 @@ function updateState (currentState, emailExists, lastNameEmpty) {
   if (emailExists) { 
     newState = 'login'
   } else {
-    console.log(lastNameEmpty)
     if (!lastNameEmpty) {
       newState = 'register'
     } else {

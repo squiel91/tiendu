@@ -32,7 +32,6 @@ const fileFilter = (req, file, callback) => {
 exports.saveToFS = multer({ storage: fileStorage, fileFilter }).single('image')
 
 exports.resizeImage = async (req, res, next) => {
-  console.log(req.file.path)
   await sharp(req.file.path)
     .rotate()
     .resize(1200, 1200)
@@ -113,7 +112,7 @@ exports.deleteGallery = async (req, res, next) => {
     await Image.findByIdAndDelete(req.params.imageId)
     fs.unlink(
       rootPath('public', populatedImage.src),
-      error => { if (error) console.log(error) }
+      error => { if (error) console.error(error) }
     )
 
     res.json({ success: true })

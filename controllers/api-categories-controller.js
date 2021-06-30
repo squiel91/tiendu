@@ -77,7 +77,6 @@ exports.postCategory = async (req, res, next) => {
 exports.patchCategory = async (req, res, next) => {
   try {
     const categoryId = req.params.categoryId
-    console.log(req.body)
     const category = await Category.findByIdAndUpdate(
       categoryId,
       req.body,

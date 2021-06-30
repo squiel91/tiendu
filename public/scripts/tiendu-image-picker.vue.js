@@ -20,7 +20,8 @@ export default {
   data () {
     return {
       pickerVisible: false,
-      items: []
+      items: [],
+      currentPage: 1
     }
   },
   methods: {
@@ -50,23 +51,27 @@ export default {
       this.hide()
     },
     async uploadImage (event) {
-      try {
-        const fileInput = event.target
-        const formData = new FormData()
-        formData.append('image', fileInput.files[0])
-        const response = await axios.post('/images', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
+      const fileInput = event.target
+      for (const file of fileInput.files) {
+        try {
+          const formData = new FormData()
+          formData.append('image', file)
+          const response = await axios.post('/images', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          if (response.data.success) {
+            const newImage = response.data.image
+            this.items.unshift(newImage)
+            this.$set(newImage, 'selected', false)
+            this.currentPage = 1 // move to the beggining
+            this.selectItem(newImage)
           }
-        })
-        if (response.data.success) {
-          const newImage = response.data.image
-          this.items.unshift(newImage)
-          this.selectItem(newImage)
+        } catch (error) {
+          alert('Hubo un error subiendo la imágen')
+          console.error(error)
         }
-      } catch (error) {
-        alert('Ups! Hubo un error subiendo la imágen')
-        console.log(error)
       }
     },
     removeSelected (image) {
@@ -116,9 +121,8 @@ export default {
             <button class="remove" @click="removeSelected(image)"><i class="bi bi-trash-fill"></i></button>
           </div>
         </draggable>
-        <pagination-navigator v-model="currentPage" :items="items" items-per-page="itemsPerPage"></pagination-navigator>
       </div>
-      <div v-else>
+      <div v-else class="image-picker-select-panel">
         <div class="image-picker-actions">
           <div style="display: flex;">
             <secondary-button v-if="hasItems" @click="select()" style="margin-right: 8px;">Seleccionar</secondary-button>
@@ -138,14 +142,14 @@ export default {
             @click="selectItem(image)"
           ></div>          
         </div>
-        <div v-if="totalPages > 1" class="pagination">
+        <div v-if="totalPages > 1" class="pagination" style="padding-bottom: 0;">
           <span class="details">
-            {{ from }}-{{ to }} de {{ totalItems }}
+            {{ from }}-{{ to }} de  {{ currentPage }} de {{ totalItems }}
           </span>
           <button @click="--currentPage" :disabled="!hasPrev"><i class="bi bi-chevron-left"></i></button>
           <button @click="++currentPage" :disabled="!hasNext"><i class="bi bi-chevron-right"></i></button>
         </div>
-        <input type="file" ref="imageUpload" style="display: none;"  @change="uploadImage($event)"/>
+        <input type="file" ref="imageUpload" style="display: none;"  @change="uploadImage($event)" multiple/>
       </div>
     </div>
   `,

@@ -29,8 +29,6 @@ exports.getCustomize = async (req, res, next) => {
 exports.postCustomize = (req, res, next) => {
   try {
     // global variable
-    console.log(req.body.homepageCategory)
-    console.log(req.body.homepageCategoryAltTitle)
     PREFERENCES = {
       storeName: req.body.storeName,
       globalMessage: req.body.globalMessage,

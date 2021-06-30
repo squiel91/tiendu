@@ -1,5 +1,7 @@
 import tienduButton from '/statics/scripts/tiendu-button.vue.js'
+import tienduSecondaryButton from '/statics/scripts/tiendu-secondary-button.vue.js'
 import tienduInput from '/statics/scripts/tiendu-input.vue.js'
+import imagePicker from '/statics/scripts/tiendu-image-picker.vue.js'
 
 export default {
   props: {
@@ -10,7 +12,9 @@ export default {
   },
   components: {
     tienduButton,
-    tienduInput
+    tienduSecondaryButton,
+    tienduInput,
+    imagePicker
   },
   methods: {
     addOption () {
@@ -53,7 +57,8 @@ export default {
         values: this.value.options.map(option => ''),
         price: this.defaultPrice,
         compareAt: this.defaultCompareAt,
-        stock: this.defaultStock
+        stock: this.defaultStock,
+        images: []
       }
       this.value.variants.push(variant)
     },
@@ -79,17 +84,22 @@ export default {
             <div v-for="(value, optionIndex) in variant.values">
               <tiendu-input placeholder="Valor" :id="'opt-' + optionIndex + '-var-' + variantIndex" v-model="variant.values[optionIndex]"></tiendu-input>
             </div>
-            <div class="edit-button" style="display: flex;">
-            <tiendu-button style="flex-grow: 1; margin-right: 8px; padding: 16px; width: auto !important;" @click="moveVariant(variantIndex, 'up')"><i class="bi bi-chevron-up"></i></tiendu-button>
-            <tiendu-button style="flex-grow: 1; margin-right: 8px; padding: 16px; width: auto !important;" @click="moveVariant(variantIndex, 'down')"><i class="bi bi-chevron-down"></i></tiendu-button>
-            <tiendu-button style="flex-grow: 1; margin-right: 8px; padding: 16px; width: auto !important;" @click="toggleDetails(variant)"><i class="bi bi-pencil-square"></i></tiendu-button>
-              <tiendu-button style="flex-grow: 1;padding: 16px; width: auto !important;" @click="removeVariant(variantIndex)"><i class="bi bi-trash-fill"></i></tiendu-button>
+            <div class="edit-button" style="display: grid; gap: 8px; grid-auto-flow: column; align-self: stretch;">
+              <tiendu-secondary-button :stretch="true" @click="moveVariant(variantIndex, 'up')"><i class="bi bi-chevron-up"></i></tiendu-secondary-button>
+              <tiendu-secondary-button :stretch="true" @click="moveVariant(variantIndex, 'down')"><i class="bi bi-chevron-down"></i></tiendu-secondary-button>
+              <tiendu-secondary-button :stretch="true" @click="toggleDetails(variant)"><i class="bi bi-pencil-square"></i></tiendu-secondary-button>
+              <tiendu-secondary-button :stretch="true" @click="removeVariant(variantIndex)"><i class="bi bi-trash-fill"></i></tiendu-secondary-button>
             </div>
           </div>
           <div class="variant-details-grid" v-if="variant.showDetails">
             <tiendu-input label="Precio $" :id="'price-var-' + variantIndex" v-model.number="variant.price" type="number" step="1"></tiendu-input>
             <tiendu-input label="Referencia $" :id="'compare-at-var-' + variantIndex" type="number" step="1" v-model.number="variant.compareAt" help="Puramente de márketing. Es el precio que aparece como el que estaba antes de hacer un descuento. Aparece tachado al lado del precio real."></tiendu-input>
             <tiendu-input label="Stock" v-model.number="variant.stock" :id="'stock-var-' + variantIndex" type="number" step="1" placeholder="ilimitado" help="Cada vez que se compra un producto el stock baja. Se puede dejar vacío para no llevara un registro del stock."></tiendu-input>
+            <image-picker v-model="variant.images" class="first-col span-3-col">
+              <span>
+                Seleccionar imágenes
+              </span>
+            </image-picker>
           </div>
         </template>
       </div>

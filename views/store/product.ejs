@@ -130,15 +130,16 @@
 
   .thumbnailImageContainer {
     margin-top: 8px;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    gap: 8px;
+    grid-gap: 8px;
+    grid-template-columns: repeat(5, 1fr);
   }
 
   .thumbnailImage {
     border-radius: 4px;
-    width: 66px;
-    height: 66px;
-    margin-right: 8px;
+    max-width: 100%;
+    padding-bottom: 100%;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -298,14 +299,19 @@
 <script>
   var variantData = <%- JSON.stringify(variantData) %>;
 </script>
-<% let userReview;%>
+<% 
+  let userReview
+  let allImages = []
+
+%>
 <div class="row">
   <div class="col-lg-6 imageColumn">
-    <div class="currentImage <%= product.images?.length > 0 ? '' : 'no-image' %>" style="background-image: url('<%= product.images?.length > 0 ? product.images[0].coverSrc : '/statics/assets/no-image.png' %>');"></div>
-    <% if (product.images?.length > 1) { %>
+    <div class="currentImage <%= product.hasImages() ? '' : 'no-image' %>" style="background-image: url('<%= product.hasImages() ? product.getCover().coverSrc : '/statics/assets/no-image.png' %>');"></div>
+    <% if (product.hasImages()) { %>
       <div class="thumbnailImageContainer">
-        <% product.images.forEach((image, index) => { %>
-          <div class="thumbnailImage" data-image="<%= image.coverSrc %>" style="background-image: url('<%= image.coverSrc %>');"></div>
+        <% allImages = product.allImages()
+          allImages.forEach((image, index) => { %>
+          <div class="thumbnailImage" data-variants="<%= image.variants?.join(',') %>" data-image="<%= image.coverSrc %>" style="background-image: url('<%= image.thumbSrc %>');"></div>
         <% }) %>
       </div>
     <% } %>
@@ -419,7 +425,7 @@
             // skipping the first one that is the -- select one --
             for (var optionIndex = 1; optionIndex < selector.options.length; optionIndex++) {
               var option = selector.options[optionIndex]
-              console.log($(selector).prop('name'))
+
               option.disabled = !validOptionsForSelector[option.value];
             }
           }
@@ -455,8 +461,6 @@
               }
             }
           } else {
-            $('.add-to-cart').prop('disabled', false);
-            $('.add-to-cart').text('Agregar al carrito');
             var matchingVariant;
             for (var variantIndex = 0; variantIndex < product.variants.length; variantIndex++) {
               var variant = product.variants[variantIndex];
@@ -497,6 +501,17 @@
               stockEl.text('Solo quedan ' + stock + ' unidades')
             }
             maxStock = stock;
+
+            var thumbElements = $('.thumbnailImage')
+            for (var thumbIndex = 0; thumbIndex < thumbElements.length; thumbIndex++) {
+              var thumbEl = $(thumbElements[thumbIndex])
+              if (thumbEl.data('variants') && thumbEl.data('variants').toString().split(',').map(literal => parseInt(literal)).includes(variantId)) {
+                $('.currentImage').css('background-image',  'url(\'' + thumbEl.data('image') +'\')')
+                break;
+              }
+            }
+            $('.add-to-cart').prop('disabled', false);
+            $('.add-to-cart').text('Agregar al carrito');
           }
         }
       </script>
@@ -642,12 +657,14 @@
     event.preventDefault()
   })
 
-  const currentImage = $('.currentImage')
-  $('.thumbnailImage').hover(event => {
+  function changeCoverImage (event) {
     const imageUrl = $(event.target).data('image')
     currentImage.css("background-image", `url('${imageUrl}')`)
+  }
 
-  })
+  const currentImage = $('.currentImage')
+  $('.thumbnailImage').hover(changeCoverImage)
+  $('.thumbnailImage').click(changeCoverImage)
 
   var reviewValue = <%= userReview?.value || 'null' %>;
 
@@ -737,5 +754,11 @@
     });
   </script>
 <% } %>
+
+<% allImages?.forEach((image, index) => {
+  if (index !== 0) { %>
+    <link rel="preload" as="image" href="<%= image.coverSrc %>">
+  <% } 
+ }) %>
 
 <%- include('../partials/store-tail.ejs') %>

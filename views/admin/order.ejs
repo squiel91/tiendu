@@ -213,12 +213,12 @@
           if (response.data.success) {
             this.$refs.mainButton.isSuccess()
           } else {
-            console.log('There was an error')
+            console.error('There was an error processing the order')
           } 
           this.loading = false
         } catch (error) {
           this.loading = false
-          console.log(error)
+          console.error(error)
         }
       },
       async remove() {

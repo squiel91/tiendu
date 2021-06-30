@@ -8,7 +8,6 @@ const stdRes = require('../utils/standard-response')
 
 exports.getProduct = async (req, res, next) => {
   try {
-    console.log(req.params.productId)
     const product = await Product.findById(req.params.productId)
 
     // TODO: only admins can access not listed
@@ -91,7 +90,6 @@ exports.patchProduct = async (req, res, next) => {
     const productId = req.params.productId
     const product = await Product.findById(productId)
 
-    console.log(typeof product.stock)
     product.title = req.body.title
     product.handle = req.body.handle
     product.price = req.body.price
