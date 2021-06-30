@@ -95,7 +95,7 @@ export default {
             <tiendu-input label="Precio $" :id="'price-var-' + variantIndex" v-model.number="variant.price" type="number" step="1"></tiendu-input>
             <tiendu-input label="Referencia $" :id="'compare-at-var-' + variantIndex" type="number" step="1" v-model.number="variant.compareAt" help="Puramente de márketing. Es el precio que aparece como el que estaba antes de hacer un descuento. Aparece tachado al lado del precio real."></tiendu-input>
             <tiendu-input label="Stock" v-model.number="variant.stock" :id="'stock-var-' + variantIndex" type="number" step="1" placeholder="ilimitado" help="Cada vez que se compra un producto el stock baja. Se puede dejar vacío para no llevara un registro del stock."></tiendu-input>
-            <image-picker v-model="variant.images" class="first-col span-3-col">
+            <image-picker v-model="variant.images" style="grid-column: 1/-1">
               <span>
                 Seleccionar imágenes
               </span>

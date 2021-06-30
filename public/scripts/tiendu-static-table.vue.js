@@ -53,7 +53,6 @@ export default {
     }
   },
   template: `
-    [{{ pageItems }}]
     <div class="table" :class="{'add-spacing': totalPages <= 1 }">
       <div class="row header">
         <div v-for="col in cols" class="col" :style="{ 'grid-column': 'span ' + (col.span || 1) }" :class="{'hide-mobile': col.hideMobile}">{{ col.label }}</div>
