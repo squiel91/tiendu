@@ -2,7 +2,6 @@ import staticPagingMixin from '/statics/scripts/tiendu-static-paging-mixin.vue.j
 import tienduButton from '/statics/scripts/tiendu-button.vue.js'
 import secondaryButton from '/statics/scripts/tiendu-secondary-button.vue.js'
 
-
 export default {
   mixins: [staticPagingMixin],
   props: {
@@ -22,7 +21,8 @@ export default {
   data () {
     return {
       pickerVisible: false,
-      items: []
+      items: [],
+      uploading: 0
     }
   },
   methods: {
@@ -53,6 +53,7 @@ export default {
     },
     async uploadImage (event) {
       const fileInput = event.target
+      this.uploading = fileInput.files.length
       for (const file of fileInput.files) {
         try {
           const formData = new FormData()
@@ -72,6 +73,8 @@ export default {
         } catch (error) {
           alert('Hubo un error subiendo la imágen')
           console.error(error)
+        } finally {
+          this.uploading -= 1
         }
       }
     },
@@ -143,8 +146,10 @@ export default {
                 class="img-thumb uploadImageButton"
               >
                 <div style="color: blue; font-size: xx-large; position: absolute; flex-direction: column; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center;">
-                  <i class="bi bi-upload"></i>
-                  <p style="    font-size: small; padding: 0px; margin: 0px; font-weight: bold;">Subir</p>
+                  <i v-if="uploading <= 0" class="bi bi-upload"></i>
+                  <i v-if="uploading > 0" class="bi bi-hourglass-split animate-rotate"></i>
+                  <p v-if="uploading <= 0" style="font-size: small; padding: 0px; margin: 0px; font-weight: bold;">Subir</p>
+                  <p v-if="uploading > 0" style="font-size: small; padding: 0px; margin: 0px; font-weight: bold;">Subiendo...</p>
                 </div>
               </div>
               <div
@@ -152,11 +157,11 @@ export default {
                 :key="image.id"
                 class="img-thumb"
                 :class="{ selected: image.selected }"
-                :style="{ backgroundImage: 'url(\\'' + image.src + '\\')' }"
+                :style="{ backgroundImage: 'url(\\'' + image.thumbSrc + '\\')' }"
                 @click="selectItem(image)"
               ></div> 
             </div>
-            <div v-if="totalPages > 1" class="pagination">
+            <div v-if="totalPages > 1" class="pagination" style="padding-bottom: 0;">
               <span class="details">
                 {{ from }}-{{ to }} de  {{ currentPage }} de {{ totalItems }}
               </span>
@@ -164,7 +169,7 @@ export default {
               <button @click="++currentPage" :disabled="!hasNext"><i class="bi bi-chevron-right"></i></button>
             </div>
             <input type="file" ref="imageUpload" style="display: none;"  @change="uploadImage($event)" multiple/>
-            <tiendu-button v-if="hasItems" @click="select()" style="margin-right: 8px;">Seleccionar</secondary-button>
+            <tiendu-button v-if="hasItems" @click="select()" style="margin-top: 12px;">Seleccionar</secondary-button>
           </div>
         </div>
       </div>

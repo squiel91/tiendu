@@ -53,7 +53,7 @@ const userSchema = new Schema({
 userSchema.methods.addToCart = function (productId, quantity, variantId) {
   if (!quantity) quantity = 1
 
-  const cartProductIndex = this.cart.findIndex((elem) => elem.product.toString() === productId.toString() && variantId === elem.variantId)
+  const cartProductIndex = this.cart.findIndex((elem) => elem.product.toString() === productId.toString() && (!variantId || variantId === elem.variantId))
   if (cartProductIndex >= 0) {
     const item = this.cart[cartProductIndex]
     item.quantity += quantity

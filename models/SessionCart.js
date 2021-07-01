@@ -62,7 +62,7 @@ module.exports = class SessionCart {
   addToCart (productId, quantity, variantId) {
     if (!quantity) quantity = 1
 
-    const cartProductIndex = this.items.findIndex((elem) => elem.product.toString() === productId.toString() && variantId === elem.variantId)
+    const cartProductIndex = this.items.findIndex((elem) => elem.product.toString() === productId.toString() && (!variantId || variantId === elem.variantId))
     if (cartProductIndex >= 0) {
       const item = this.items[cartProductIndex]
       item.quantity += quantity
