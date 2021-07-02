@@ -110,8 +110,12 @@ productSchema.methods.hasImages = function () {
 
 productSchema.methods.getImage = function (variantId) {
   let coverImage = this.images && this.images[0]
-  if (variantId && this.variants && this.variants[parseInt(variantId) - 1]) {
-    coverImage = this.variants[parseInt(variantId) - 1].images[0]
+  console.log(variantId && this.variants && this.variants[parseInt(variantId) - 1] && this.variants[parseInt(variantId) - 1].images[0])
+  if (variantId && this.hasVariants && this.variants && this.variants[parseInt(variantId) - 1]) {
+    const variant = this.variants[parseInt(variantId) - 1]
+    if (variant.images && variant.images[0]) {
+      coverImage = this.variants[parseInt(variantId) - 1].images[0]
+    }
   }
   if (coverImage) return coverImage
   return {
@@ -124,7 +128,7 @@ productSchema.methods.getImage = function (variantId) {
 productSchema.methods.getCover = function () {
   if (this.images && this.images.length > 0) return this.images[0]
   else {
-    if (this.hasVariant && this.variants) {
+    if (this.hasVariants && this.variants) {
       // return the first image of the variant
       for (const variant of this.variants) {
         if (variant.images && variant.images > 0) {
