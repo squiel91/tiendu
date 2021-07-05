@@ -3,29 +3,46 @@ body {
   font-family: 'Karla', sans-serif;
 }
 
+.adminBar {
+  display: block;
+  background-color: black;
+  color: white;
+  padding: 12px 0;
+  transition: background-color 0.5s;
+  cursor: pointer;
+  overflow-y: auto;
+}
+
+a.admin-button {
+  display: inline-block;
+  color: white;
+  background-color:#222222;
+  color: gray;
+  padding: 8px 16px;
+  border-radius: 30px;
+  transition: all 0.3s;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+a.admin-button:last-child {
+  margin-right: 0;
+}
+
+a.admin-button svg {
+  margin-right: 6px;
+}
+
+a.admin-button:hover, a.admin-button:active {
+  color: white;
+  background-color:blue;
+}
+
 a {
   font-weight: bold;
   color: black;
   text-decoration: none;
   transition: color 0.3s;
-}
-
-.adminBar {
-  display: block;
-  background-color: black;
-  color: white;
-  text-align: center;
-  padding: 6px;
-  transition: background-color 0.5s;
-  cursor: pointer;
-}
-
-.adminBar:hover {
-  background-color: blue;
-}
-
-a.adminBar:hover {
-  color: white;
 }
 
 a:hover, a:active {
@@ -78,6 +95,27 @@ Extra extra large 	xxl	            ≥1400px
 
 */
 
+@media screen and (min-width: 768px) {
+  
+  .hide-mobile {
+    display: block;
+  }
+
+  .hide-desktop {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .hide-desktop {
+    display: block;
+  }
+
+  .hide-mobile {
+    display: none;
+  }
+}
+
 @media screen and (max-width: 992px) {
   .main-brand { font-size: 25px; }
   h1 { font-size: 25px; }
@@ -88,6 +126,8 @@ Extra extra large 	xxl	            ≥1400px
   .row {
     --bs-gutter-x: 0.8rem;
   }
+
+
 
 }
 

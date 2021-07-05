@@ -16,10 +16,12 @@ function filterOutUnpublishedProducts (category) {
 }
 
 // get hompage
+const ITEMS_TO_SHOW = 6
+
 exports.getHomepage = async (req, res, next) => {
   try {
     // all these can be done more efficiently using only mongo groups
-    const featuredProducts = await Product.find({ featured: true, publish: true })
+    const featuredProducts = await Product.find({ featured: true, publish: true }).limit(ITEMS_TO_SHOW)
 
     // eslint-disable-next-line no-undef
     const homepageCategoryRawList = PREFERENCES.homepage?.categories || []
@@ -27,8 +29,11 @@ exports.getHomepage = async (req, res, next) => {
 
     const homepageCategoryList = await Category.find(
       { _id: { $in: homepageCategoryIds } }
-    ).populate('products')
-    homepageCategoryList.forEach(category => filterOutUnpublishedProducts(category))
+    ).populate({
+      path: 'products',
+      match: { publish: true },
+      options: { limit: ITEMS_TO_SHOW }
+    })
 
     const homepageCategories = []
     homepageCategoryRawList.forEach(rawItem => {
@@ -41,9 +46,9 @@ exports.getHomepage = async (req, res, next) => {
       }
     })
 
-    const reviews = await Review.find()
+    const reviews = await Review.find().sort({ created: -1 }).where('comment').ne(null).limit(6)
 
-    res.render('store/homepage.ejs', { featuredProducts, reviews: reviews.filter(review => review.comment), neighbourhoodCodes, homepageCategories, title: 'plantas online en Uruguay' })
+    res.render('store/homepage.ejs', { featuredProducts, reviews, neighbourhoodCodes, homepageCategories, title: 'plantas online en Uruguay' })
   } catch (error) { next(error) }
 }
 

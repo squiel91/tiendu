@@ -12,7 +12,7 @@ export default {
   },
   computed: {
     pageItems () {
-      return this.items?.slice(this.itemsPerPage * (this.currentPage - 1), this.itemsPerPage * this.currentPage)
+      return this.items && this.items.slice(this.itemsPerPage * (this.currentPage - 1), this.itemsPerPage * this.currentPage)
     },
     from () {
       return this.itemsPerPage * (this.currentPage - 1) + 1
@@ -27,10 +27,10 @@ export default {
       return this.currentPage > 1
     },
     totalPages () {
-      return Math.ceil(this.items?.length / this.itemsPerPage)
+      return Math.ceil(this.totalItems() / this.itemsPerPage)
     },
     totalItems () {
-      return this.items?.length
+      return this.items ? this.items.length : 0
     }
   }
 }

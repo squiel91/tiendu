@@ -56,6 +56,7 @@ server.use(morgan('combined', { stream: accessLogStream }))
 
 server.use(favicon(path.join(path.dirname(require.main.filename), 'public', 'assets', 'favicon.png')))
 
+server.use('/scripts', express.static(rootPath(...['public', 'scripts']))) // 'statics' subroute so it does not initialize the session
 server.use('/statics', express.static(rootPath('public'))) // 'statics' subroute so it does not initialize the session
 
 server.use(

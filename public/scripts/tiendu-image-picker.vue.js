@@ -1,6 +1,6 @@
-import staticPagingMixin from '/statics/scripts/tiendu-static-paging-mixin.vue.js'
-import tienduButton from '/statics/scripts/tiendu-button.vue.js'
-import secondaryButton from '/statics/scripts/tiendu-secondary-button.vue.js'
+import staticPagingMixin from '/scripts/tiendu-static-paging-mixin.vue.js'
+import tienduButton from '/scripts/tiendu-button.vue.js'
+import secondaryButton from '/scripts/tiendu-secondary-button.vue.js'
 
 export default {
   mixins: [staticPagingMixin],
@@ -87,7 +87,7 @@ export default {
       return this.value.map(image => image.id)
     },
     hasItems () {
-      return this.items?.length > 1 // has a dummy first element to upload image
+      return this.items && this.items.length > 1 // has a dummy first element to upload image
     }
   },
   watch: {

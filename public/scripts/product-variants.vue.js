@@ -1,7 +1,7 @@
-import tienduButton from '/statics/scripts/tiendu-button.vue.js'
-import tienduSecondaryButton from '/statics/scripts/tiendu-secondary-button.vue.js'
-import tienduInput from '/statics/scripts/tiendu-input.vue.js'
-import imagePicker from '/statics/scripts/tiendu-image-picker.vue.js'
+import tienduButton from '/scripts/tiendu-button.vue.js'
+import tienduSecondaryButton from '/scripts/tiendu-secondary-button.vue.js'
+import tienduInput from '/scripts/tiendu-input.vue.js'
+import imagePicker from '/scripts/tiendu-image-picker.vue.js'
 
 export default {
   props: {

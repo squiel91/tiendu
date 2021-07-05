@@ -517,7 +517,7 @@
       </script>
       <div class="tab-header">
         <% if (product.description) { %><a href="#descripcion" class="tab-button active">Descripción</a><% } %>
-        <a href="#resenas" class="tab-button">Reseñas</a>
+        <a href="#resenas" class="tab-button <% if (!product.description) { %>active<% } %>">Reseñas</a>
       </div>
       <% if (product.description) { %><div id="descripcion" class="tab-content" style="display: block;"><%- product.description %></div><% } %>
       <div id="resenas" class="tab-content" <% if (!product.description) { %>style="display: block;"<% } %>>
@@ -737,8 +737,8 @@
 </script>
 <% if (recommendedProducts.length > 0) { %>
   <div class="recommendations">
-    <h2>También te pueden interesar</h2>
-    <%- include('./snippets/list-products.ejs', { products: recommendedProducts }) %>
+    <h2>También te puede interesar</h2>
+    <%- include('./snippets/list-products.ejs', { products: recommendedProducts, showDesktop: 3 }) %>
   </div>
 <% } %>
 
