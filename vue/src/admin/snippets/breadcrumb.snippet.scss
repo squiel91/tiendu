@@ -1,0 +1,28 @@
+.breadcrumb-snippet {
+  padding: 16px 0;
+  font-weight: bold;
+  color: blue;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 8px;
+  font-size: smaller;
+  
+  .breadcrumb__separator {
+    width: 8px;
+    margin: 0 8px;
+  
+    i {
+      display: inline-block;
+      transform: scale(0.85);
+    }
+  }
+  
+  .breadcrumb-el {
+    margin-bottom:1rem;
+    margin-top:1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

@@ -1,0 +1,165 @@
+#checkout-page {
+  h2, h3 {
+    font-family: inherit;
+  }
+  section {
+    padding-bottom: 64px;
+    
+    @include on-tablet {
+      padding-bottom: 48px;
+    }
+  
+    @include on-mobile {
+      padding-bottom: 32px;
+    }
+  }
+
+  section:last-child {
+    padding-bottom: 0;
+  }
+
+  .logo-mercadopago {
+    width: 120px;
+    justify-self: start;
+  
+    @include on-tablet-and-up {
+      justify-self: end;
+    
+    }
+  }
+  
+  .accordion {
+    border: 1px solid lightgray;
+    overflow: hidden;
+    border-radius: 4px;
+    
+    .drawer:not(:first-child) {
+      border-top: 1px solid lightgray;
+    }
+    .drawer-header {
+      font-weight: bold;
+      display: block;
+      padding: 16px 16px;
+      transition: all 0.3s;
+    
+      &.selected {
+        color: #0c63e4;
+        background-color: #e7f1ff;
+      }
+    }  
+    
+    .drawer-body {
+      border-top: 1px solid lightgray;
+      padding: 16px 16px;
+    }
+  }
+  
+  h3 {
+    font-size: unset;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+
+  .checkout-button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  input[type="checkbox"] {
+    margin-right: 12px;
+  }
+  
+  input[type="radio"] {
+    margin-right: 12px;
+  }
+  
+  .ship-container input[type="radio"] {
+    margin-top: 6px;
+  }
+  
+  .checkout-step {
+    display: flex;
+    align-items: center;
+  }
+  
+  .checkout-step .indicator {
+    font-size: small;
+    font-family: 'Karla';
+    padding: 4px 8px;
+    background-color: #91998e;
+    border-radius: 12px;
+    color: white;
+    display: inline-block;
+    margin-right: 8px;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  .ship-label-container div:first-child {
+    font-weight: bold;
+  }
+  
+  .ship-label-container {
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1;
+    flex-wrap: wrap;
+  }
+  
+  .ship-label-container div:first-child {
+    flex-grow: 1;
+    padding-right: 30px;
+  }
+  
+  .required {
+    font-weight: bold;
+    color: #777e86;
+  }
+  
+  h3 {
+      font-size:unset;
+      font-weight: bold;
+      margin-bottom: 12px;
+  }
+  
+  .std-grid > h3 {
+    margin-bottom: 0;
+  }
+  
+  .compact-grid {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+  }
+  
+  .tablet-up-help {
+    display: none;
+  }
+  
+  .main-action {
+    justify-self: stretch;
+  }
+  
+  .accordion-body {
+    padding: 1rem 1rem;
+  }
+  
+  .payment-network-logo {
+    display: block;
+    width: 200px;
+    margin-bottom: 20px;
+  }
+  
+  .coupon-label {
+    background-color: #7ec77e;
+    font-size: small;
+    color: white;
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 15px;
+    margin-left: 8px;
+    font-weight: bold;
+  }
+} 

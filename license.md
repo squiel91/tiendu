@@ -1,0 +1,3 @@
+# Licencia
+
+[GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html), incluida todo tipo de usos comerciales. Para todas las instalaciones por terceros, es requerido agregar el mensaje: "Tienda creada usando [Tiendu](https://tiendu.uy/)." (incluido el link) al final de todas las páginas en la tienda online. Recomendamos agregarlo simplemente en el footer. Todas las versiones derivadas deben incluir esta misma licencia.

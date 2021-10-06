@@ -1,0 +1,26 @@
+#order-page {
+  h1 .number {
+    color: lightgray;
+  }
+  
+  .order-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 32px;
+  }
+
+  .items-container {
+    grid-column: span 2;
+  }
+
+  @media screen and (max-width: 992px) {
+    .order-container {
+      grid-template-columns: 1fr;
+      grid-gap: 0;
+    }
+
+    .items-container {
+      grid-column: span 1;
+    }
+  }
+}

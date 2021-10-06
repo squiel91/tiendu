@@ -1,0 +1,99 @@
+.input-snippet {
+  .inner-input {
+    display: flex;
+    width: 100%;
+    border: none;
+    background-color: whitesmoke;
+    border-radius: 4px;
+    align-items: baseline;
+  }
+  
+  &.white .inner-input {
+    background-color: white;
+  }
+  
+  &.error {
+    display: block;
+    color: red;
+    width: 18px;
+    font-weight: bold;
+    padding: 16px;
+    margin-right: -8px;
+  }
+  
+  label {
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+    flex-shrink: 0;
+    color: #a7a7a7;
+    padding: 16px 0 16px 16px;
+    top: 1px;
+  }
+  
+  input, select {
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+    width: 0;
+    flex-grow: 1;
+    border: none;
+    background-color: transparent;
+    padding: 16px;
+    font-size: inherit;
+    font-family: inherit;
+  }
+  
+  select {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 16px center;    
+  }
+  
+  select.can-be-cleared {
+    background-position: right 0 center;    
+  }
+
+  input[type='password'] {
+    letter-spacing: 6px;
+  }
+
+  input::placeholder {
+    color: #a7a7a7;
+  }
+
+  button {
+    padding: 16px;
+    border: none;
+    background-color: transparent;
+
+    &.change-quantity {
+      font-weight: bold;
+      color: $primary;
+
+      &:disabled {
+        color: lightgray;
+      }
+    }
+
+    &.password-button {
+      transform: scale(1.2);
+      display: block;
+      color: #a7a7a7;
+    }
+
+    &.clear i {
+      outline: none;
+      transform: scale(1.6);
+      display: inline-block;
+    }
+  }
+  
+  i.error-icon {
+    padding: 16px 16px 16px;
+    margin-right: -16px;
+    cursor: help;
+    color: red;
+    z-index: 1;
+  }
+}

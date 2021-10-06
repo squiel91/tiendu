@@ -1,0 +1,23 @@
+#customize-page {
+  .menu-grid {
+    display: grid;
+    gap: 24px;
+  }
+
+  .item-grid {
+    gap: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+
+    @media screen and (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .remove-item {
+    border: none;
+    background-color: transparent;
+    color: blue;padding: 0 16px;
+    cursor: pointer;
+  }
+}

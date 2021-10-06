@@ -1,0 +1,229 @@
+nav {
+  &.is-home {
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, .3), rgba(255, 255, 255, 1)),
+      url("/src/store/assets/how-to-grow-a-healthy-indoor-garden-h.jpg");
+    background-size: cover;
+
+    background-position-x: right;
+    background-position-y: bottom;
+    position: relative;
+    margin-bottom: 24px;
+    
+    @include on-mobile {
+      background-position-x: center;
+    }
+  }
+
+  a.logo-title-link {
+    color: inherit; /* blue colors for links too */
+    text-decoration: inherit;
+    color: black;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+
+    img {
+      width: 200px;
+
+      @include on-tablet {
+        width: 180px;
+      }
+
+      @include on-mobile {
+        width: 140px;
+      }
+    }
+  }
+  
+  .topMenu {
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding-top: 24px;
+    padding-bottom: 24px;
+
+    @include on-mobile {
+      padding-top: 16px;
+      padding-bottom: 16px;
+    }
+  }
+
+  .topMenu .menuItem {
+    padding: 8px 0px 8px 0px;
+    margin-left: 20px;
+    flex-shrink: 0;
+  }
+
+  .desktop-menu {
+    display: flex; 
+    flex-grow: 1;
+    align-items: flex-start;
+  }
+
+  .miniCart, .menuIcon {
+    width: 26px;
+    margin-right: 2px;
+  }
+
+  .separator {
+    flex-grow: 1;
+    height: 10px;
+  }
+
+  .collapsableMenu {
+    position: absolute;
+    margin-top: 0px;
+    padding: 16px 0;
+    border-radius: 8px;
+    box-shadow: 0 0.9px 2.2px rgba(0,0,0,.02), 0 2.2px 5.3px rgba(0,0,0,.028), 0 4.1px 10px rgba(0,0,0,.035), 0 7.4px 17.9px rgba(0,0,0,.042), 0 13.8px 33.4px rgba(0,0,0,.05), 0 33px 80px rgba(0,0,0,.07);
+    transition: all 0.2s;
+    z-index: 999;
+    min-width: 200px;
+    margin-top: 8px;
+    background-color: white;
+  }
+
+  .collapsableMenu.relative {
+    position: relative !important;
+  }
+
+  .collapsableMenu.left {
+    right: 0;
+  }
+
+  .collapsableMenu .menuItem {
+    display: block;
+    margin-left: 0;
+    padding: 10px 30px;
+    background-color: white;
+    transition: background-color .3s;
+  }
+
+  .collapsableMenu .menuItem:hover {
+    background-color: whitesmoke;
+  }
+
+  .collapsableMenu .titleSeparator {
+    padding: 16px 30px 4px 30px;
+    font-size: small;
+    color: gray;
+  }
+
+  .menuOverlay {
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.2);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 998;
+    /* transition: opacity 0.2s; */
+  }
+
+  .message-bar {
+    background-color: #7bb17b;
+    color: white;
+    font-weight: bold;
+    padding: 16px;
+    text-align: center;
+  }
+
+  @include on-mobile {
+    .hideOnLarge {
+      display: none;
+    }  
+  }
+
+  @include on-mobile {
+    .topMenu {
+      flex-wrap: wrap;
+    }
+
+    .separator {
+      display: block;
+    }
+
+    /* Category list */
+    .positionRelative {
+      position: relative;
+    }
+
+    .collapsableMenu {
+      width: 100%;
+    }
+  }
+
+  .featuredCategories {
+    display: flex;
+    overflow: visible;
+  }
+
+  .featuredCategory {
+    flex-shrink: 0;
+    margin: 16px 0px;
+  }
+
+  .featuredCategory button {
+    border-radius: 50px;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 20px;
+    color: white;
+    background-color: cornflowerblue;
+    margin-right: 8px;
+    transition: opacity 0.3s;
+  }
+
+  .featuredCategory button:hover {
+    opacity: 0.8;
+  }
+
+  .empty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .empty-container img.empty {
+    max-width: 500px;
+  }
+
+  .empty-container p {
+    text-align: center;
+    font-family: 'Alata', sans-serif;
+    font-size: x-large;
+    color: #e7e8e9;
+    margin-top: 35px;
+    line-height: 1.2;
+  }
+
+  .empty-container p strong {
+    font-weight: bold;
+    color: #bdbec0;
+    font-style: oblique;
+  }
+}
+
+// animations
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-down-enter-active,
+.fade-down-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-down-enter-from,
+.fade-down-leave-to {
+  opacity: 0;
+  transform: translateY(-16px);
+}

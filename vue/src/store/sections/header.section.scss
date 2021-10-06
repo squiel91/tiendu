@@ -1,0 +1,42 @@
+header {
+  // height: 65vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  align-items: center;
+
+  @include on-tablet {
+    // height: 55vh;
+  }
+
+  @include on-mobile {
+    justify-content: center;
+    // height: 45vh;
+  }
+
+  button {
+    @include on-desktop { margin-bottom: 40px; }
+    @include on-tablet { margin-bottom: 32px; }
+  }
+
+  h1 {
+    font-size: 3em;
+    color: $primary;
+    text-align: center;
+    margin-top: 60px;
+    max-width: 800px;
+    
+    @include on-tablet {
+      font-size: 2.6em;
+      max-width: 600px;
+    }
+
+    @include on-mobile {
+      font-size: 1.7em;
+      margin-top: 54px;
+      margin-bottom: 40px;
+      max-width: 90%;
+    }
+  }
+}
