@@ -1,0 +1,43 @@
+.only-show-print {
+  display: none;
+}
+
+.alert {
+  background-color: #cfe2ff;
+  border-color: #b6d4fe;
+  position: relative;
+  padding: 1rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable, #printable * {
+    visibility: visible;
+  }
+  #printable {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .only-show-print {
+    display: block;
+  }
+
+  .hide-print {
+    display: none;
+  }
+}
+
+.print-button {
+  color: white;
+  background-color: cornflowerblue !important;
+  right: 120px !important;
+  bottom: 40px !important;
+  border: none;
+}

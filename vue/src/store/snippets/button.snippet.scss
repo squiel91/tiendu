@@ -1,0 +1,110 @@
+.button-snippet {
+  position: relative;
+  font-family: inherit;
+  font-size: inherit;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  padding: 16px 40px;
+  
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+  
+  &:not(.noExapansionMobile) {
+    @include on-mobile {
+      padding: 16px;
+      width: 100%;
+    }
+  }
+
+  &.primary {
+    border: none;
+    background-color: $primary;
+    color: white;
+
+    &:hover:enabled, &:disabled {
+      transform: scale(1.03);
+    }
+  }
+
+  &.secondary {
+    color: $primary;
+    background-color: transparent;
+    border: 1px solid $primary;
+
+    &:hover:enabled, &:disabled {
+      background-color: rgba($primary, .15);
+    }
+  }
+
+  &.success:disabled {
+    background-color: cornflowerblue;
+  }
+
+  // loading widget
+  .loader-widget {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    $width: 40px;
+    $color: white;
+
+    .loader {
+      position: relative;
+      width: $width;
+      &:before {
+        content: '';
+        display: block;
+        padding-top: 100%;
+      }
+    }
+
+    .circular {
+      animation: rotate 2s linear infinite;
+      height: 100%;
+      transform-origin: center center;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+    }
+
+    .path {
+      stroke-dasharray: 1, 200;
+      stroke-dashoffset: 0;
+      stroke: $color;
+      animation: dash 1.5s ease-in-out infinite;
+      stroke-linecap: round;
+    }
+
+    @keyframes rotate {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes dash {
+      0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+      }
+      50% {
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -35px;
+      }
+      100% {
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -124px;
+      }
+    }
+  }
+}

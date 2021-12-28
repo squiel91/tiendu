@@ -1,0 +1,141 @@
+.cart__error {
+  color: red;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.cart__item-grid {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr 1fr;
+  grid-gap: 24px;
+  align-items: center;
+}
+
+.cart__item-grid .quantity-label {
+  font-weight: bold;
+}
+
+.cart__item-grid .unit-price-label {
+  font-weight: bold;
+  grid-column: 3;
+}
+
+.cart__item-grid .price {
+  margin-bottom: 0;
+}
+
+@media screen and (max-width: 767px) {
+  .cart__item-grid .price {
+    grid-column: 2/3;
+  }
+}
+
+.cart__item-grid .line {
+  grid-column: 1 / -1;
+  border-bottom: 1px solid lightgray;
+}
+
+.cart__item {
+  display: flex;
+  align-items: center;
+  padding-right: 30px;
+  margin-bottom: 35px;
+  overflow: hidden;
+  align-items: start;
+  border-top: 1px solid lightgray;
+}
+
+.cart__thumbnail {
+  background-image: url('../assets/no-image.svg');
+  background-size: cover;
+  background-position: center;
+  width: 100px;
+  height: 100px;
+  border-radius: 4px;
+  grid-column: 1;
+}
+
+.cart__total {
+  font-weight: bold;
+}
+
+.cart__details {
+  flex-grow: 1;
+}
+
+form {
+  display: inline;
+}
+
+button.primary.spacing {
+  margin-top: 31px;
+  margin-bottom: 50px;
+}
+
+.item-separator {
+  display: none;
+}
+
+.coupon-button {
+  color: $primary;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 767px) {
+  .cart__item-grid {
+    grid-template-columns: auto 1fr auto;
+    grid-auto-flow: dense;
+    grid-gap: 16px;
+  }
+
+  .coupon { 
+    padding-bottom: 8px;
+  }
+
+  .cart__thumbnail {
+    grid-row: span 2;
+    align-self: baseline;
+  }
+
+  .title {
+    grid-column: span 2;
+  }
+
+  .cart__item-grid .quantity-label {
+    display: none;
+  }
+
+  .cart__item-grid .unit-price-label {
+    display: none;
+  }
+
+  .item-separator {
+    display: block;
+    margin-bottom: 16px;
+    grid-column: 1 / -1;
+  }
+
+  .checkout-button button {
+    width: 100%;
+  }
+}
+
+#remove-coupon {
+  color: $primary;
+  background-color: transparent;
+  border: none;
+  font-weight: bold;
+  font-size: inherit;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.discounted {
+  color: darkgrey;
+  text-decoration: line-through;
+}
+
+.input-snippet.coupon {
+  margin: 0;
+}

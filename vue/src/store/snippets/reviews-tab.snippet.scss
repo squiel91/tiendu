@@ -1,0 +1,60 @@
+.reviews-snippet {
+
+  label.review-comment-container {
+    display: block;
+    margin-top: 30px;
+    padding: 16px;
+    border-radius: 4px;
+    background-color: whitesmoke;
+    
+    textarea {
+      font-family: inherit;
+      font-size: inherit;
+      display: block;
+      border: none;
+      background-color: transparent;
+      resize: vertical;
+      width: 100%;
+      min-height: 100px;
+      height: 100px;
+    }
+  }
+  
+  .value-review {
+    display: flex;
+  }
+  
+  .value-review {
+    display: flex;
+    align-items: center;
+  }
+  
+  .value-review .star {
+    cursor: pointer;
+    width: 32px;
+  }
+  
+  .value-review #value-descriptor {
+    margin-left: 16px;
+    margin-top: 3px;
+  }
+  
+  .review {
+    margin-bottom: 20px;
+  }
+  
+  .message-edit-review {
+    padding: 20px 30px;
+    background-color: whitesmoke;
+    border-radius: 4px;
+  }
+  
+  .review-top-message {
+    font-weight: bold; 
+    margin-top: 40px;
+  }
+  
+  .option-spacing {
+    margin-top: 16px;
+  }
+}

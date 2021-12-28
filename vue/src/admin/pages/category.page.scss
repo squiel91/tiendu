@@ -1,0 +1,34 @@
+#category-page {
+  .category-editor-grid {
+    display: grid;
+    grid-gap: 32px;
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .first-col {
+    grid-column-start: 1;
+  }
+  
+  .span-2-col {
+    grid-column-end: span 2;
+  }
+
+  .pell-content p:first-child {
+    margin-top: 0;
+  }
+
+  @media screen and (max-width: 992px) {
+    .category-editor-grid {
+      grid-template-columns: 1fr;
+      grid-gap: 16px;
+    }
+
+    .first-col {
+      grid-column-start: unset;
+    }
+    
+    .span-2-col {
+      grid-column-end: unset;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+#home-page {
+  section {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    
+    @include on-tablet {
+      padding-top: 32px;
+      padding-bottom: 32px;
+    }
+  
+    @include on-mobile {
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+  }
+}

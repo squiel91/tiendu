@@ -1,0 +1,23 @@
+.category-section {
+  h2 {
+    text-align: center;
+    font-family: 'Chelsea Market', cursive;
+    padding-bottom: 1.6em;
+  }
+
+  .see-more {
+    color: $primary;
+    text-transform: uppercase;
+
+    i {
+      display: inline-block;
+      margin-left: 4px;
+      transition: transform 0.5s ease;      
+    }
+
+    &:hover i {
+      transform: translateX(8px);
+    }
+  }
+
+}

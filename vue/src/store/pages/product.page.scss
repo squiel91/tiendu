@@ -1,0 +1,250 @@
+#product-page {
+  .review-count {
+    background-color: $primary;
+    color: white;
+    border-radius: 50%;
+    min-width: 18px;
+    height: 18px;
+    font-size: small;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: normal;
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 40px;
+  }
+
+  .thumb-grid {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 8px;
+  }
+
+  .image.cover {
+    cursor : grab;
+    background-image: url('./../assets/no-image.svg');
+  }
+
+  .image {
+    width: 100%;
+    padding-bottom: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 4px;
+    background-repeat: no-repeat;
+  }
+
+  h1.productTitle {
+    margin-top: 16px;
+    margin-bottom: 0;
+  }
+
+  .price-container {
+    margin-top: 8px;
+    margin-bottom: 24px;
+    font-size: x-large;
+    display: flex;
+    align-items: center;
+  }
+
+  .images-container {
+    display: flex;
+  }
+
+  .expaneded-container {
+    flex-grow: 1;
+  }
+
+  .share-container {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+  }
+
+  .share {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50px;
+    width: 50px;
+    height: 50px;
+    color: $primary;
+    background-color: whitesmoke;
+    transition: all 0.5s;
+  }
+
+  .share:hover {
+    background-color: lightgrey;
+  }
+
+  ul.shareList  {
+    list-style-type: none;
+    padding-left: 32px;
+    margin: 0;
+    justify-content: space-around;
+  }
+
+  ul.shareList li {
+    display: inline-block;
+    margin-right: 24px;
+  }
+
+  ul.shareList li:last-child {
+    margin-right: 0;
+  }
+
+  ul.shareList li img {
+    width: 36px;
+  }
+
+  .share-link {
+    transition: all 0.5s;
+    position: relative;
+    bottom: 0;
+    opacity: 1;
+
+    i {
+      font-size: xx-large;
+      color: $primary;
+    }
+  }
+
+  .share-link:hover {
+    bottom: 6px;
+    opacity: 0.7;
+  }
+
+  .recommendations {
+    margin-top: 80px;
+  }
+
+  .recommendations h2 {
+    margin-bottom: 1.3em;
+  }
+
+
+  .picture {
+    height: 400px;
+  }
+
+  .pictureLink {
+    margin-right: 20px;
+  }
+  
+  .pictureLink:last-child {
+    margin-right: 0;
+  }
+
+  @media screen and (max-width: 992px) {
+    .price {
+      font-size: large;
+    }
+    .recommendations {
+      margin-top: 40px;
+    }
+  }
+
+  .currentImage {
+    width: 100%;
+    padding-bottom: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 4px;
+    background-repeat: no-repeat;
+  }
+  
+  .currentImage:not([class*="no-image"]):hover {
+    background-size: initial;
+    cursor: move;
+  }
+
+  .thumbnailImageContainer {
+    margin-top: 8px;
+    display: grid;
+    gap: 8px;
+    grid-gap: 8px;
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .thumbnailImage {
+    border-radius: 4px;
+    max-width: 100%;
+    padding-bottom: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .thumbnailImage:last-child {
+    margin-right: 0;
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    grid-gap: 16px;
+    margin: 16px 0 30px 0;
+    align-items: center;
+  }
+
+  .table-header {
+    font-weight: bold;
+    margin-right: 16px;
+    width: 26px;
+  }
+
+  .reviews {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+  }
+
+
+  .review-details {
+    display: flex;
+    align-items: center;
+    color: gray;
+  }
+
+  .tab-header {
+    display: flex;
+    margin-top: 20px;
+    overflow-y: auto;
+  }
+
+  .tab-button {
+    padding: 12px;
+    /* color: #5f9061; */
+    font-weight: bold;
+    flex-shrink: 0;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .tab-button.active {
+    border-bottom: 3px solid $primary;
+    color: $primary;
+  }
+
+  .tab-content {
+    margin-top: 24px;
+  }
+
+  .fade-right-enter-active,
+  .fade-right-leave-active {
+    transition: all 0.3s ease;
+  }
+
+  .fade-right-enter-from,
+  .fade-right-leave-to {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}

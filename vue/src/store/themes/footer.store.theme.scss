@@ -1,0 +1,164 @@
+footer {
+
+  // background-image: 
+  // linear-gradient(rgba(255, 255, 255, .6), rgba(255, 255, 255, .4)),
+  // url("/src/store/assets/how-to-grow-a-healthy-indoor-garden-h.jpg");
+  // background-size: cover;
+  
+  margin-top: 80px;
+  padding: 40px 0 30px 0;
+  border-top: 1px solid lightgray;
+
+  @include on-mobile {
+    margin-top: 64px;
+    padding-top: 0;
+  }
+
+  .footerMenuItem {
+    display: block;
+    padding: 8px 16px;
+    background-color: white;
+    transition: background-color 1s;
+
+    &:hover {
+      background-color: whitesmoke;
+    }
+  }
+
+  .subscribe-input-button {
+    color: $primary;
+    font-weight: bold;
+  }
+
+  .newsletter button {
+    border: none;
+    background-color: transparent;
+    color: $primary;
+    font-weight: bold;
+  }
+
+  footer ul {
+    list-style-type: none;
+    padding: 0;
+    padding-right: 0;
+  }
+
+  footer li {
+    padding: 8px 0 8px 0;
+  }
+
+  .footer-message-grid {
+    font-size: small;
+    color: gray;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-top: 80px;
+
+    @include on-mobile {
+      margin-top: 24px;
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .get-in-touch {
+    @include on-mobile {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    a {
+      margin: 2px 0;
+      display: flex;
+      align-items: center;
+
+      @include on-mobile {
+        font-size: small;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+  
+      i {
+        color: $primary;
+        font-size: x-large;
+
+        @include on-mobile {
+          margin-bottom: 8px;
+        }
+        
+        @include on-tablet-and-up {
+          margin-right: 16px;
+        }
+      }
+    }
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+
+    @include on-mobile {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .expand-collapsable-menu {
+    transition: transform 0.5s ease;
+  }
+  
+  .expand-collapsable-menu.open {
+    transform: rotate(225deg);
+  }
+
+  .collapsable-footer-menu {
+    font-weight: bold;
+    border-bottom: 1px solid lightgray;
+    padding: 15px 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .newsletter-col {
+
+    @include on-tablet {
+      order: -1;
+      margin-bottom: 24px;
+    }
+
+    .newsletter-group {
+      display: flex;
+    }
+  }
+
+  @include on-mobile {
+    .newsletter-col {
+      grid-column: span 1;
+      margin-bottom: 32px;
+    }
+
+    .footer-message {
+      flex-direction: column-reverse;
+    }
+
+    .footer-message .final-legend {
+      margin-top: 40px;
+    }
+  }
+
+  .live-chat:hover {
+    background-color: #0cb84e;
+  }
+
+  .category-item {
+    display: block;
+    margin-left: 0;
+    padding: 0 0 8px 0;
+  }
+
+  .category-item:last-child {
+    padding: 0;
+  }
+}

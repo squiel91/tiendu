@@ -1,0 +1,13 @@
+.recommendations-snippet {
+  h2 {
+    @include on-mobile {
+      margin-bottom: 32px;
+      margin-top: 40px;
+    }
+
+    @include on-tablet-and-up {
+      margin-bottom: 40px;
+      margin-top: 60px;
+    } 
+  }
+}

@@ -1,0 +1,42 @@
+section.split-banner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 16px;
+  justify-content: stretch;
+  align-items: center;
+}
+
+.split-banner__description {
+  padding-right: 80px;
+}
+
+.split-banner__image {
+  background-image: url('../assets/shipping.jpg');
+  height: 400px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 4px;
+  box-shadow: 32px -32px #524944;
+}
+
+@media screen and (max-width: 992px) {
+  .split-banner__description {
+    padding-right: 30px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  section.split-banner {
+    grid-template-columns: 1fr;
+    grid-row-gap: 36px;
+  }
+
+  .split-banner__description {
+    padding: 20px;
+  }
+
+  .split-banner__image {
+    height: 300px;
+    order: -1;
+  }
+}

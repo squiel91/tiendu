@@ -1,0 +1,25 @@
+.search-cart-bar-store-theme {
+  background-color: whitesmoke;
+  position: sticky;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 10;
+
+  .menuItem a[href="/canasta"] {
+    display: flex;
+    align-items: center
+  }
+  
+  .cart-quantity {
+    background-color: $primary;
+    color: white;
+    border-radius: 50%;
+    min-width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: normal;
+  }
+}

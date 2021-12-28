@@ -1,0 +1,32 @@
+#admin-theme {
+  line-height: 1.4;
+
+  a {
+    color: blue;
+  }
+
+  @import './base.admin.theme.scss';
+  @import '../../store/styles/base.scss';
+  
+  // components
+  @import '../snippets/breadcrumb.snippet.scss';
+  @import '../snippets/button.snippet.scss';
+  @import '../snippets/dynamic-table.snippet.scss';
+  @import '../snippets/image-picker.snippet.scss';
+  @import '../snippets/input.snippet.scss';
+  @import '../snippets/product-variants.snippets.scss';
+  @import '../snippets/secondary-button.snippet.scss';
+  @import '../snippets/static-selectable-table.snippet.scss';
+  @import '../snippets/static-table.snippet.scss';
+  @import '../snippets/textarea.snippet.scss';
+
+  // pages
+  @import '../pages/404.page.scss';
+  @import '../pages/category.page.scss';
+  @import '../pages/coupon.page.scss';
+  @import '../pages/customize.page.scss';
+  @import '../pages/order.page.scss';
+  @import '../pages/page.page.scss';
+  @import '../pages/post.page.scss';
+  @import '../pages/product.page.scss';
+}

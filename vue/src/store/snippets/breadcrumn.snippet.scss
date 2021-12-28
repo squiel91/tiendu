@@ -1,0 +1,32 @@
+
+  .breadcrumb-snippet {
+    padding: 8px 0;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    a.breadcrumb__link {
+      color: black;
+      margin-bottom:1rem;
+      margin-top:1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.3s;
+
+      &:hover {
+        color: $primary;
+      }
+    }
+
+    .breadcrumb__separator {
+      width: 8px;
+      margin: 0 8px;
+
+      i {
+        display: inline-block;
+        transform: scale(0.65);
+      }
+    }
+  }
